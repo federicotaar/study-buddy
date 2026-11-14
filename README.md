@@ -13,7 +13,7 @@ Quick start
 -----------
 1. Clona la repo:
 
-   git clone https://github.com/federicotaranudev/study-buddy.git
+   git clone https://github.com/federicotaar/study-buddy.git
    cd study-buddy
 
 2. Apri il file `index.html` con il browser (doppio click) oppure esegui un semplice server:
