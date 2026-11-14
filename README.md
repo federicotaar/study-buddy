@@ -37,4 +37,4 @@ MIT — vedi LICENSE
 
 Contribuire
 -----------
-Se vuoi che configuri CI, deploy su GitHub Pages o aggiunga funzionalità (autenticazione, backend per sincronizzazione), dimmi e lo aggiungo.
+Segnalazioni e proposte sono benvenute: apri una issue descrivendo cosa vorresti vedere (es. CI, deploy su GitHub Pages, autenticazione o un backend di sincronizzazione).
