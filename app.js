@@ -77,7 +77,7 @@ startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',
 // Settings persist
 [workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));setMode(mode)})})
 
-function loadSettings(){const s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null');if(s){workInput.value=s.work;shortInput.value=s.short;longInput.value=s.long}}
+function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s){workInput.value=s.work;shortInput.value=s.short;longInput.value=s.long}}
 
 // Init
 function init(){loadSettings();renderTasks();renderStats();setMode('work');updateTime();}
