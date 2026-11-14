@@ -55,7 +55,7 @@ function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short
 
 function updateTime(){timeEl.textContent = formatTime(remaining)}
 
-function tick(){if(remaining<=0){onSessionEnd();return}remaining--;updateTime()}
+function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
 
 function onSessionEnd(){// vibrate or alert
  if(navigator.vibrate) navigator.vibrate(400); else alert('Sessione terminata!');
@@ -68,7 +68,8 @@ function onSessionEnd(){// vibrate or alert
  // auto start next session? keep stopped to let user choose
  pauseTimer();}
 
-function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;timerInterval=setInterval(tick,1000)}
+let endAt = 0;
+function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
 function pauseTimer(){if(!isRunning) return;isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null}
 function resetTimer(){pauseTimer();setMode('work')}
 
