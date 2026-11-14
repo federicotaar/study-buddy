@@ -55,7 +55,7 @@ resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche
 // Timer core
 function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short'?'Short Break':'Long Break');let minutes = (m==='work'? parseInt(workInput.value,10): (m==='short'? parseInt(shortInput.value,10): parseInt(longInput.value,10)));remaining = Math.max(1,minutes)*60;updateTime();}
 
-function updateTime(){timeEl.textContent = formatTime(remaining)}
+function updateTime(){timeEl.textContent = formatTime(remaining);document.title = isRunning ? formatTime(remaining)+' · Study Buddy' : 'Study Buddy'}
 
 function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
 
