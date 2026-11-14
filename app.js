@@ -74,7 +74,7 @@ function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true
 function pauseTimer(){if(!isRunning) return;isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null}
 function resetTimer(){pauseTimer();setMode('work')}
 
-startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',pauseTimer);resetBtn.addEventListener('click',()=>{if(confirm('Reimpostare il timer?')) resetTimer();})
+startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',pauseTimer);resetBtn.addEventListener('click',()=>{if(confirm('Reimpostare il timer?')) resetTimer();});
 
 // Settings persist
 [workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));setMode(mode)})})
