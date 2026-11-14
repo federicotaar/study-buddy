@@ -28,6 +28,7 @@ let timerInterval = null;
 let remaining = 25 * 60;
 let isRunning = false;
 let mode = 'work'; // 'work' | 'short' | 'long'
+let sessionMinutes = 25; // minutes credited when a work session ends, captured at start
 let completedWorkSessions = parseInt(localStorage.getItem(CYCLE_KEY)||'0',10)||0;
 
 // Utilities
@@ -61,7 +62,7 @@ function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remai
 function onSessionEnd(){// vibrate or alert
  if(navigator.vibrate) navigator.vibrate(400); else alert('Sessione terminata!');
  if(mode==='work'){// increment stats
-   const s=loadStats(); const added = Math.max(1, parseInt(workInput.value,10)); s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions++; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
+   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions++; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
  }
  // auto switch mode
  if(mode==='work'){ if(completedWorkSessions % 4 === 0) setMode('long'); else setMode('short'); }
@@ -70,7 +71,7 @@ function onSessionEnd(){// vibrate or alert
  pauseTimer();}
 
 let endAt = 0;
-function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
+function startTimer(){if(isRunning) return;isRunning=true;sessionMinutes = Math.max(1, Math.round(remaining/60));startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
 function pauseTimer(){if(!isRunning) return;isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null}
 function resetTimer(){pauseTimer();setMode('work')}
 
