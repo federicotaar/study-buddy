@@ -1,3 +1,7 @@
+/* Study Buddy - styles.css
+   Tema scuro a contrasto alto. Variabili in :root:
+   --bg sfondo pagina, --card pannelli, --accent colore primario (timer/controlli),
+   --muted testo secondario. Layout a due colonne sopra i 900px, colonna singola sotto. */
 *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
 :root{--bg:#0f1724;--card:#0b1220;--accent:#ff6b6b;--muted:#94a3b8}
 body{margin:0;background:linear-gradient(180deg,#071029 0%,#0f1b2a 100%);color:#e6eef8}
