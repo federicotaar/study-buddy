@@ -47,4 +47,14 @@ vm.runInContext('setMode("work"); startTimer();', ctx);
 els.workMinutes.value = '5';
 vm.runInContext('onSessionEnd()', ctx);
 assert.strictEqual(vm.runInContext('loadStats()', ctx).minutes, 25);
+// an empty or invalid duration input falls back to the mode default
+// instead of breaking the timer with NaN
+els.workMinutes.value = '';
+vm.runInContext('setMode("work")', ctx);
+assert.strictEqual(vm.runInContext('remaining', ctx), 25 * 60);
+assert.strictEqual(vm.runInContext('formatTime(remaining)', ctx), '25:00');
+els.shortMinutes.value = 'abc';
+vm.runInContext('setMode("short")', ctx);
+assert.strictEqual(vm.runInContext('remaining', ctx), 5 * 60);
+els.workMinutes.value = '25'; els.shortMinutes.value = '5';
 console.log('APP TESTS PASS');
