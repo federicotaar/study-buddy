@@ -7,6 +7,8 @@ Features:
 - Timer Pomodoro (work/short break/long break)
 - Lista di task (add/complete/delete)
 - Statistiche giornaliere: sessioni completate e minuti studiati
+- Countdown nel titolo della scheda mentre il timer è attivo
+- Scorciatoie da tastiera: Spazio = start/pausa, R = reset
 - Funziona offline: basta aprire index.html
 
 Quick start
@@ -30,6 +32,7 @@ Note per sviluppatori
   - `studyBuddy:tasks` → lista task
   - `studyBuddy:settings` → impostazioni dei minutes
   - `studyBuddy:stats:YYYY-MM-DD` → statistiche giornaliere
+- Test: `node tests/app.test.js` (stub di DOM e localStorage, nessuna dipendenza)
 
 Licenza
 -------
