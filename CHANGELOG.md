@@ -6,6 +6,12 @@ Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti
 
 - Corretto l'URL di clone nel README dopo la rinomina dell'account GitHub in `federicotaar`.
 - README: sezione "Contribuire" riscritta in forma standard.
+- Il timer accredita i minuti della sessione avviata anche se le impostazioni cambiano a metà sessione.
+- Le statistiche tollerano valori corrotti o parziali in localStorage.
+- Il titolo della scheda mostra il countdown mentre il timer è attivo.
+- Scorciatoie da tastiera: Spazio = start/pausa, R = reset.
+- Timer annunciato agli screen reader (aria-live).
+- Test smoke node per app.js (`tests/app.test.js`).
 
 ## 2026-04-13
 
