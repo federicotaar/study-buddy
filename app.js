@@ -21,13 +21,14 @@ const resetStatsBtn = $('resetStats');
 // Storage keys
 const TASKS_KEY = 'studyBuddy:tasks';
 const STATS_PREFIX = 'studyBuddy:stats:'; // + YYYY-MM-DD
+const CYCLE_KEY = 'studyBuddy:cycle'; // completed work sessions in the current long-break cycle
 
 // Timer state
 let timerInterval = null;
 let remaining = 25 * 60;
 let isRunning = false;
 let mode = 'work'; // 'work' | 'short' | 'long'
-let completedWorkSessions = 0;
+let completedWorkSessions = parseInt(localStorage.getItem(CYCLE_KEY)||'0',10)||0;
 
 // Utilities
 function pad(n){return n.toString().padStart(2,'0')}
@@ -60,7 +61,7 @@ function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remai
 function onSessionEnd(){// vibrate or alert
  if(navigator.vibrate) navigator.vibrate(400); else alert('Sessione terminata!');
  if(mode==='work'){// increment stats
-   const s=loadStats(); const added = Math.max(1, parseInt(workInput.value,10)); s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions++;
+   const s=loadStats(); const added = Math.max(1, parseInt(workInput.value,10)); s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions++; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
  }
  // auto switch mode
  if(mode==='work'){ if(completedWorkSessions % 4 === 0) setMode('long'); else setMode('short'); }
@@ -85,4 +86,4 @@ function init(){loadSettings();renderTasks();renderStats();setMode('work');updat
 init();
 
 // Optional: reset data helper (for debugging)
-window._studyBuddyResetAll = function(){if(confirm('Cancellare tutti i dati locali dello Study Buddy?')){localStorage.removeItem(TASKS_KEY);localStorage.removeItem('studyBuddy:settings');localStorage.removeItem(STATS_PREFIX+todayKey());renderTasks();renderStats();setMode('work');updateTime();}}
+window._studyBuddyResetAll = function(){if(confirm('Cancellare tutti i dati locali dello Study Buddy?')){localStorage.removeItem(TASKS_KEY);localStorage.removeItem('studyBuddy:settings');localStorage.removeItem(CYCLE_KEY);completedWorkSessions=0;localStorage.removeItem(STATS_PREFIX+todayKey());renderTasks();renderStats();setMode('work');updateTime();}}
