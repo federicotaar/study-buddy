@@ -26,9 +26,9 @@
           </div>
 
           <div class="settings">
-            <label>Work: <input id="workMinutes" type="number" min="1" value="25"> min</label>
-            <label>Short: <input id="shortMinutes" type="number" min="1" value="5"> min</label>
-            <label>Long: <input id="longMinutes" type="number" min="1" value="15"> min</label>
+            <label>Work: <input id="workMinutes" type="number" min="1" max="180" value="25"> min</label>
+            <label>Short: <input id="shortMinutes" type="number" min="1" max="60" value="5"> min</label>
+            <label>Long: <input id="longMinutes" type="number" min="1" max="120" value="15"> min</label>
           </div>
         </div>
 
@@ -44,7 +44,7 @@
         <div class="card tasks-card">
           <h2>Task</h2>
           <form id="taskForm">
-            <input id="taskInput" placeholder="Aggiungi task..." required />
+            <input id="taskInput" placeholder="Aggiungi task..." aria-label="Nuovo task" required />
             <button type="submit">Aggiungi</button>
           </form>
           <ul id="taskList"></ul>
