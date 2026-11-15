@@ -25,3 +25,6 @@ main{display:flex;gap:16px;margin-top:18px}
 .task-done{opacity:0.6;text-decoration:line-through}
 footer{margin-top:8px;text-align:center;color:var(--muted)}
 @media(max-width:900px){main{flex-direction:column}.right{width:100%}}
+
+/* Focus visibile per chi naviga da tastiera (scorciatoie Spazio/R) */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
