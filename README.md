@@ -4,7 +4,7 @@ Study Buddy è un'app semplice per studiare con la tecnica Pomodoro e gestire i 
 Questa versione è client-side: non richiede backend. I dati vengono salvati nel tuo browser (localStorage).
 
 Features:
-- Timer Pomodoro (work/short break/long break)
+- Timer Pomodoro (work/short break/long break), con pausa lunga automatica ogni 4 sessioni di lavoro completate
 - Lista di task (add/complete/delete)
 - Statistiche giornaliere: sessioni completate e minuti studiati
 - Countdown nel titolo della scheda mentre il timer è attivo
@@ -32,6 +32,7 @@ Note per sviluppatori
   - `studyBuddy:tasks` → lista task
   - `studyBuddy:settings` → impostazioni dei minutes
   - `studyBuddy:stats:YYYY-MM-DD` → statistiche giornaliere
+  - `studyBuddy:cycle` → sessioni di lavoro completate nel ciclo corrente (scatta la pausa lunga ogni 4)
 - Test: `node tests/app.test.js` (stub di DOM e localStorage, nessuna dipendenza)
 
 Licenza
