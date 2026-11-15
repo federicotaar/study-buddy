@@ -70,3 +70,15 @@ assert.strictEqual(vm.runInContext('isRunning', ctx), true);
 vm.runInContext('pauseTimer();', ctx);
 
 console.log('APP TESTS PASS');
+
+// formatTime handles zero and full hours without dropping padding
+assert.strictEqual(vm.runInContext('formatTime(0)', ctx), '00:00');
+assert.strictEqual(vm.runInContext('formatTime(600)', ctx), '10:00');
+// todayKey is the YYYY-MM-DD key the stats rows are stored under
+assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(vm.runInContext('todayKey()', ctx)));
+// corrupt tasks JSON must not break the list: it falls back to empty
+store.set('studyBuddy:tasks', '{not json');
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadTasks()', ctx))), []);
+// a corrupt settings blob is ignored, not thrown on
+store.set('studyBuddy:settings', '][broken');
+vm.runInContext('loadSettings()', ctx);
