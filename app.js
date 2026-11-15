@@ -53,7 +53,7 @@ function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;min
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
 
 // Timer core
-function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short'?'Short Break':'Long Break');const raw=(m==='work'? workInput.value : (m==='short'? shortInput.value : longInput.value));let minutes=parseInt(raw,10);if(!Number.isFinite(minutes)) minutes=(m==='work'? 25 : (m==='short'? 5 : 15));remaining = Math.max(1,minutes)*60;updateTime();}
+function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short'?'Short Break':'Long Break');const raw=(m==='work'? workInput.value : (m==='short'? shortInput.value : longInput.value));let minutes=parseInt(raw,10);if(!Number.isFinite(minutes)) minutes=(m==='work'? 25 : (m==='short'? 5 : 15));remaining = Math.max(1,minutes)*60;sessionMinutes = Math.max(1,minutes);updateTime();}
 
 function updateTime(){timeEl.textContent = formatTime(remaining);document.title = isRunning ? formatTime(remaining)+' · Study Buddy' : 'Study Buddy'}
 
@@ -71,7 +71,7 @@ function onSessionEnd(){// vibrate or alert
  pauseTimer();}
 
 let endAt = 0;
-function startTimer(){if(isRunning) return;isRunning=true;sessionMinutes = Math.max(1, Math.round(remaining/60));startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
+function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
 function pauseTimer(){if(!isRunning) return;isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null}
 function resetTimer(){pauseTimer();setMode('work')}
 
