@@ -2,6 +2,12 @@
 
 Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti.
 
+## 2026-11-15
+
+- Pausa e ripresa non riducono piu' i minuti accreditati: i minuti della sessione sono fissati all'impostazione del timer, non riletti a ogni Start.
+- Test di regressione per il caso pausa/ripresa.
+- Accessibilita': etichetta per il campo dei task e contorni di focus visibili da tastiera.
+
 ## 2026-11-14
 
 - Corretto l'URL di clone nel README dopo la rinomina dell'account GitHub in `federicotaar`.
