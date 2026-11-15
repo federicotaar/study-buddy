@@ -57,4 +57,7 @@ els.shortMinutes.value = 'abc';
 vm.runInContext('setMode("short")', ctx);
 assert.strictEqual(vm.runInContext('remaining', ctx), 5 * 60);
 els.workMinutes.value = '25'; els.shortMinutes.value = '5';
+// pausing and resuming still credits the full session, not the minutes left at resume
+vm.runInContext('setMode("work"); startTimer(); pauseTimer(); startTimer(); onSessionEnd()', ctx);
+assert.strictEqual(vm.runInContext('loadStats()', ctx).minutes, 50);
 console.log('APP TESTS PASS');
