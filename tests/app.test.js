@@ -18,7 +18,7 @@ const ctx = {
   document: {
     getElementById: id => (els[id] = els[id] || makeEl()),
     createElement: () => makeEl(),
-    addEventListener() {},
+    addEventListener(type, f) { (this._h = this._h || {})[type] = f; },
     title: '',
   },
   localStorage: {
@@ -60,4 +60,13 @@ els.workMinutes.value = '25'; els.shortMinutes.value = '5';
 // pausing and resuming still credits the full session, not the minutes left at resume
 vm.runInContext('setMode("work"); startTimer(); pauseTimer(); startTimer(); onSessionEnd()', ctx);
 assert.strictEqual(vm.runInContext('loadStats()', ctx).minutes, 50);
+// Space on a focused button must not double-toggle the timer (the button's
+// own click already fires); only keys from the page background drive shortcuts
+vm.runInContext('pauseTimer();', ctx);
+ctx.document._h.keydown({ code: 'Space', target: { tagName: 'BUTTON' }, preventDefault() {} });
+assert.strictEqual(vm.runInContext('isRunning', ctx), false);
+ctx.document._h.keydown({ code: 'Space', target: { tagName: 'DIV' }, preventDefault() {} });
+assert.strictEqual(vm.runInContext('isRunning', ctx), true);
+vm.runInContext('pauseTimer();', ctx);
+
 console.log('APP TESTS PASS');
