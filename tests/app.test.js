@@ -170,3 +170,14 @@ assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),0);
 assert.strictEqual(store.has('studyBuddy:cycle'),false);
 assert.strictEqual(vm.runInContext('mode',ctx),'work');
 assert.strictEqual(ctx.document.title,'Study Buddy');
+
+// Declining a destructive reset leaves existing task data and timer untouched.
+store.set('studyBuddy:tasks',JSON.stringify([{text:'keep me',done:false}]));
+vm.runInContext('setMode("work");startTimer()',ctx);
+ctx.confirm=()=>false;
+ctx.window._studyBuddyResetAll();
+assert.strictEqual(vm.runInContext('isRunning',ctx),true);
+assert.strictEqual(JSON.parse(store.get('studyBuddy:tasks'))[0].text,'keep me');
+ctx.confirm=()=>true;
+vm.runInContext('pauseTimer()',ctx);
+console.log('POMODORO LIFECYCLE REGRESSIONS PASS');
