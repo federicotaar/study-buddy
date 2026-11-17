@@ -90,7 +90,7 @@ document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.altKey||e.meta
 // Settings persist
 [workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));pauseTimer();setMode(mode)})})
 
-function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s){workInput.value=s.work;shortInput.value=s.short;longInput.value=s.long}}
+function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s&&typeof s==='object'&&!Array.isArray(s)){for(const [key,input,max] of [['work',workInput,180],['short',shortInput,60],['long',longInput,120]]){const n=Number(s[key]);if(Number.isInteger(n)&&n>=1&&n<=max)input.value=String(n)}}}
 
 // Init
 function init(){loadSettings();renderTasks();renderStats();setMode('work');updateTime();}
