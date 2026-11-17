@@ -48,7 +48,7 @@ function renderTasks(){const tasks=loadTasks();taskList.innerHTML='';tasks.forEa
 
 taskForm.addEventListener('submit',e=>{e.preventDefault();const val=taskInput.value.trim();if(!val) return;const tasks=loadTasks();tasks.push({text:val,done:false});saveTasks(tasks);taskInput.value='';renderTasks();})
 
-taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const tasks=loadTasks();if(typeof idx!=='undefined'){tasks[idx].done=!tasks[idx].done;saveTasks(tasks);renderTasks();}else if(typeof del!=='undefined'){tasks.splice(del,1);saveTasks(tasks);renderTasks();}})
+taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const tasks=loadTasks();if(typeof idx!=='undefined'){if(!/^\d+$/.test(idx)||!tasks[Number(idx)])return;tasks[idx].done=!tasks[idx].done;saveTasks(tasks);renderTasks();}else if(typeof del!=='undefined'){tasks.splice(del,1);saveTasks(tasks);renderTasks();}})
 
 // Stats
 function loadStats(){try{const s=JSON.parse(localStorage.getItem(STATS_PREFIX+todayKey())||'{}')||{};return {sessions:Number(s.sessions)||0,minutes:Number(s.minutes)||0}}catch(e){return {sessions:0,minutes:0}}} 
