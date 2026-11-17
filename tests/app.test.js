@@ -113,3 +113,12 @@ els.workMinutes.value='12';els.workMinutes._h.change();
 assert.strictEqual(vm.runInContext('isRunning',ctx),false);
 assert.strictEqual(vm.runInContext('remaining',ctx),720);
 assert.strictEqual(ctx.document.title,'Study Buddy');
+
+// A denied vibration API must not lose a completed session.
+ctx.navigator.vibrate=()=>{throw Error('denied')};
+vm.runInContext('setMode("work");startTimer()',ctx);
+const sessionsBefore=vm.runInContext('loadStats().sessions',ctx);
+vm.runInContext('onSessionEnd()',ctx);
+assert.strictEqual(vm.runInContext('loadStats().sessions',ctx),sessionsBefore+1);
+assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+delete ctx.navigator.vibrate;
