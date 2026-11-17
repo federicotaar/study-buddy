@@ -65,7 +65,9 @@ function updateTime(){timeEl.textContent = formatTime(remaining);document.title 
 
 function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
 
-function onSessionEnd(){// vibrate or alert
+function onSessionEnd(){
+ pauseTimer(); // clear the old interval before notifications can block or throw
+ // vibrate or alert
  if(navigator.vibrate) navigator.vibrate(400); else alert('Sessione terminata!');
  if(mode==='work'){// increment stats
    const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions=(completedWorkSessions+1)%4; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
