@@ -153,3 +153,11 @@ assert.strictEqual(ctx.document.title,'Study Buddy');
 assert.strictEqual(els.start.disabled,false);
 assert.strictEqual(els.pause.disabled,true);
 assert.strictEqual(vm.runInContext('timerInterval',ctx),null);
+
+// Partial saved settings change only valid fields, keeping the others intact.
+els.workMinutes.value='25';els.shortMinutes.value='5';els.longMinutes.value='15';
+store.set('studyBuddy:settings',JSON.stringify({work:40,short:null,long:999}));
+vm.runInContext('loadSettings()',ctx);
+assert.strictEqual(els.workMinutes.value,'40');
+assert.strictEqual(els.shortMinutes.value,'5');
+assert.strictEqual(els.longMinutes.value,'15');
