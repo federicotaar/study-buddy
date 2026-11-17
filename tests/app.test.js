@@ -97,3 +97,12 @@ for(const dataset of [{idx:'999'},{idx:'-1'},{idx:'NaN'},{del:'-1'},{del:'999'},
  els.taskList._h.click({target:{dataset}});
  assert.strictEqual(store.get('studyBuddy:tasks'),beforeTasks);
 }
+
+// Duration caps agree with the HTML controls.
+for(const [field,modeName,max] of [['workMinutes','work',180],['shortMinutes','short',60],['longMinutes','long',120]]){
+ els[field].value='999999'; vm.runInContext(`setMode('${modeName}')`,ctx);
+ assert.strictEqual(vm.runInContext('remaining',ctx),max*60);
+ els[field].value='-8'; vm.runInContext(`setMode('${modeName}')`,ctx);
+ assert.strictEqual(vm.runInContext('remaining',ctx),60);
+}
+els.workMinutes.value='25';els.shortMinutes.value='5';els.longMinutes.value='15';
