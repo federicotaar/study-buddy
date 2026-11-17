@@ -144,3 +144,12 @@ assert.strictEqual(store.get('studyBuddy:cycle'),'0');
 vm.runInContext('setMode("work");startTimer();onSessionEnd()',ctx);
 assert.strictEqual(vm.runInContext('mode',ctx),'short');
 assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),1);
+
+// A pause immediately restores the idle tab title and button state.
+vm.runInContext('setMode("work");startTimer();updateTime()',ctx);
+assert.ok(ctx.document.title.includes('Study Buddy'));
+vm.runInContext('pauseTimer()',ctx);
+assert.strictEqual(ctx.document.title,'Study Buddy');
+assert.strictEqual(els.start.disabled,false);
+assert.strictEqual(els.pause.disabled,true);
+assert.strictEqual(vm.runInContext('timerInterval',ctx),null);
