@@ -106,3 +106,10 @@ for(const [field,modeName,max] of [['workMinutes','work',180],['shortMinutes','s
  assert.strictEqual(vm.runInContext('remaining',ctx),60);
 }
 els.workMinutes.value='25';els.shortMinutes.value='5';els.longMinutes.value='15';
+
+// Editing settings invalidates an active timer rather than preserving its deadline.
+vm.runInContext('setMode("work");startTimer()',ctx);
+els.workMinutes.value='12';els.workMinutes._h.change();
+assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+assert.strictEqual(vm.runInContext('remaining',ctx),720);
+assert.strictEqual(ctx.document.title,'Study Buddy');
