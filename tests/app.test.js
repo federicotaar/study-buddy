@@ -161,3 +161,12 @@ vm.runInContext('loadSettings()',ctx);
 assert.strictEqual(els.workMinutes.value,'40');
 assert.strictEqual(els.shortMinutes.value,'5');
 assert.strictEqual(els.longMinutes.value,'15');
+
+// Clearing data while running must cancel the deadline and reset the cycle.
+vm.runInContext('setMode("work");startTimer()',ctx);
+ctx.window._studyBuddyResetAll();
+assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),0);
+assert.strictEqual(store.has('studyBuddy:cycle'),false);
+assert.strictEqual(vm.runInContext('mode',ctx),'work');
+assert.strictEqual(ctx.document.title,'Study Buddy');
