@@ -86,7 +86,7 @@ startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',
 document.addEventListener('keydown',e=>{if(e.target&&/^(INPUT|TEXTAREA|BUTTON|SELECT)$/.test(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();if(isRunning)pauseTimer();else startTimer();}else if(e.key==='r'||e.key==='R'){if(confirm('Reimpostare il timer?')) resetTimer();}});
 
 // Settings persist
-[workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));setMode(mode)})})
+[workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));pauseTimer();setMode(mode)})})
 
 function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s){workInput.value=s.work;shortInput.value=s.short;longInput.value=s.long}}
 
