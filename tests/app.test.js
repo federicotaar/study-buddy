@@ -90,3 +90,10 @@ for(const value of ['null','{}','42','[null,{},false]']){
 }
 store.set('studyBuddy:tasks','[{"text":"keep","done":true},{"text":"pending","done":"yes"}]');
 assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadTasks()',ctx))),[{text:'keep',done:true},{text:'pending',done:false}]);
+
+// Old DOM events must not mutate the wrong task or throw.
+const beforeTasks=store.get('studyBuddy:tasks');
+for(const dataset of [{idx:'999'},{idx:'-1'},{idx:'NaN'},{del:'-1'},{del:'999'},{del:'bad'}]){
+ els.taskList._h.click({target:{dataset}});
+ assert.strictEqual(store.get('studyBuddy:tasks'),beforeTasks);
+}
