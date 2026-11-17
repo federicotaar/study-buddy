@@ -59,7 +59,7 @@ function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;min
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
 
 // Timer core
-function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short'?'Short Break':'Long Break');const raw=(m==='work'? workInput.value : (m==='short'? shortInput.value : longInput.value));let minutes=parseInt(raw,10);if(!Number.isFinite(minutes)) minutes=(m==='work'? 25 : (m==='short'? 5 : 15));remaining = Math.max(1,minutes)*60;sessionMinutes = Math.max(1,minutes);updateTime();}
+function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short'?'Short Break':'Long Break');const raw=(m==='work'? workInput.value : (m==='short'? shortInput.value : longInput.value));let minutes=parseInt(raw,10);if(!Number.isFinite(minutes)) minutes=(m==='work'? 25 : (m==='short'? 5 : 15));minutes=Math.min(m==='work'?180:(m==='short'?60:120),Math.max(1,minutes));remaining=minutes*60;sessionMinutes=minutes;updateTime();}
 
 function updateTime(){timeEl.textContent = formatTime(remaining);document.title = isRunning ? formatTime(remaining)+' · Study Buddy' : 'Study Buddy'}
 
