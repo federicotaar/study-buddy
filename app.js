@@ -37,7 +37,12 @@ function formatTime(sec){return `${pad(Math.floor(sec/60))}:${pad(sec%60)}`}
 function todayKey(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 
 // Tasks
-function loadTasks(){try{return JSON.parse(localStorage.getItem(TASKS_KEY)||'[]')}catch(e){return []}}
+function loadTasks(){
+ try {
+  const tasks=JSON.parse(localStorage.getItem(TASKS_KEY)||'[]');
+  return Array.isArray(tasks) ? tasks.filter(t=>t && typeof t.text==='string').map(t=>({text:t.text,done:t.done===true})) : [];
+ } catch(e){return []}
+}
 function saveTasks(tasks){localStorage.setItem(TASKS_KEY,JSON.stringify(tasks))}
 function renderTasks(){const tasks=loadTasks();taskList.innerHTML='';tasks.forEach((t,idx)=>{const li=document.createElement('li');li.className=t.done? 'task-done':'';li.innerHTML=`<input type=checkbox ${t.done? 'checked':''} data-idx='${idx}'> <span class='title'></span> <button data-del='${idx}'>Elimina</button>`;li.querySelector('.title').textContent=t.text;taskList.appendChild(li)})}
 
