@@ -122,3 +122,16 @@ vm.runInContext('onSessionEnd()',ctx);
 assert.strictEqual(vm.runInContext('loadStats().sessions',ctx),sessionsBefore+1);
 assert.strictEqual(vm.runInContext('isRunning',ctx),false);
 delete ctx.navigator.vibrate;
+
+// Corrupt statistics are not displayed or propagated into the next session.
+for(const bad of [-1,1.5,'Infinity','NaN']){
+ store.set('studyBuddy:stats:'+vm.runInContext('todayKey()',ctx),JSON.stringify({sessions:bad,minutes:bad}));
+ assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadStats()',ctx))),{sessions:0,minutes:0});
+}
+// Keyboard repeat, editable regions and modified shortcuts are not timer controls.
+vm.runInContext('pauseTimer()',ctx);
+for(const extra of [{repeat:true},{ctrlKey:true},{altKey:true},{metaKey:true},{target:{tagName:'DIV',isContentEditable:true}}]){
+ ctx.document._h.keydown({code:'Space',target:{tagName:'DIV'},preventDefault(){},...extra});
+ assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+}
+console.log('STORAGE AND TIMER REGRESSIONS PASS');
