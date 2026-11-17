@@ -135,3 +135,12 @@ for(const extra of [{repeat:true},{ctrlKey:true},{altKey:true},{metaKey:true},{t
  assert.strictEqual(vm.runInContext('isRunning',ctx),false);
 }
 console.log('STORAGE AND TIMER REGRESSIONS PASS');
+
+// Long breaks recur on the fourth completed work session, including wraparound.
+vm.runInContext('completedWorkSessions=3;setMode("work");startTimer();onSessionEnd()',ctx);
+assert.strictEqual(vm.runInContext('mode',ctx),'long');
+assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),0);
+assert.strictEqual(store.get('studyBuddy:cycle'),'0');
+vm.runInContext('setMode("work");startTimer();onSessionEnd()',ctx);
+assert.strictEqual(vm.runInContext('mode',ctx),'short');
+assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),1);
