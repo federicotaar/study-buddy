@@ -82,3 +82,11 @@ assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadTasks()', 
 // a corrupt settings blob is ignored, not thrown on
 store.set('studyBuddy:settings', '][broken');
 vm.runInContext('loadSettings()', ctx);
+
+// Valid JSON can still contain unusable task data.
+for(const value of ['null','{}','42','[null,{},false]']){
+ store.set('studyBuddy:tasks',value);
+ assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadTasks()',ctx))),[]);
+}
+store.set('studyBuddy:tasks','[{"text":"keep","done":true},{"text":"pending","done":"yes"}]');
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadTasks()',ctx))),[{text:'keep',done:true},{text:'pending',done:false}]);
