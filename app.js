@@ -29,7 +29,8 @@ let remaining = 25 * 60;
 let isRunning = false;
 let mode = 'work'; // 'work' | 'short' | 'long'
 let sessionMinutes = 25; // minutes credited when a work session ends, captured at start
-let completedWorkSessions = parseInt(localStorage.getItem(CYCLE_KEY)||'0',10)||0;
+const storedCycle=Number(localStorage.getItem(CYCLE_KEY));
+let completedWorkSessions=Number.isSafeInteger(storedCycle)&&storedCycle>=0 ? storedCycle%4 : 0;
 
 // Utilities
 function pad(n){return n.toString().padStart(2,'0')}
