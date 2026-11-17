@@ -68,7 +68,7 @@ function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remai
 function onSessionEnd(){// vibrate or alert
  if(navigator.vibrate) navigator.vibrate(400); else alert('Sessione terminata!');
  if(mode==='work'){// increment stats
-   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions++; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
+   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions=(completedWorkSessions+1)%4; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
  }
  // auto switch mode
  if(mode==='work'){ if(completedWorkSessions % 4 === 0) setMode('long'); else setMode('short'); }
