@@ -63,7 +63,7 @@ function setMode(m){mode=m;modeEl.textContent = m==='work'? 'Work' : (m==='short
 
 function updateTime(){timeEl.textContent = formatTime(remaining);document.title = isRunning ? formatTime(remaining)+' · Study Buddy' : 'Study Buddy'}
 
-function tick(){const left=Math.round((endAt-Date.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
+function tick(){if(!isRunning)return;const left=Math.ceil((endAt-performance.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
 
 function onSessionEnd(){
  pauseTimer(); // clear the old interval before notifications can block or throw
@@ -79,8 +79,8 @@ function onSessionEnd(){
  pauseTimer();}
 
 let endAt = 0;
-function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;endAt=Date.now()+remaining*1000;timerInterval=setInterval(tick,250)}
-function pauseTimer(){if(!isRunning) return;isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null;updateTime()}
+function startTimer(){if(isRunning) return;isRunning=true;startBtn.disabled=true;pauseBtn.disabled=false;endAt=performance.now()+remaining*1000;updateTime();timerInterval=setInterval(tick,250)}
+function pauseTimer(){if(!isRunning) return;remaining=Math.max(0,Math.ceil((endAt-performance.now())/1000));isRunning=false;startBtn.disabled=false;pauseBtn.disabled=true;clearInterval(timerInterval);timerInterval=null;updateTime()}
 function resetTimer(){pauseTimer();setMode('work')}
 
 startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',pauseTimer);resetBtn.addEventListener('click',()=>{if(confirm('Reimpostare il timer?')) resetTimer();});
