@@ -73,6 +73,7 @@ function updateTime(){timeEl.textContent = formatTime(remaining);document.title 
 function tick(){if(!isRunning)return;const left=Math.ceil((endAt-performance.now())/1000);if(left<=0){remaining=0;updateTime();onSessionEnd();return}if(left!==remaining){remaining=left;updateTime()}}
 
 function onSessionEnd(){
+ if(!isRunning)return; // a stale completion callback must not credit another session
  pauseTimer(); // clear the old interval before notifications can block or throw
  // vibrate or alert
  try {if(typeof navigator.vibrate==='function') navigator.vibrate(400); else alert('Sessione terminata!');} catch(e) { /* notifications must not prevent accounting or the next mode */ }
