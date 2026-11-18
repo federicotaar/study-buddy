@@ -279,3 +279,13 @@ vm.runInContext('renderTasks()',ctx);
  assert.ok(row.innerHTML.includes("id='task-title-0'"));
  assert.ok(!row.innerHTML.includes('<b>read</b>'));
 }
+
+
+// Returning to the tab refreshes daily totals but never resets the active countdown.
+store.set('studyBuddy:stats:'+vm.runInContext('todayKey()',ctx),JSON.stringify({sessions:7,minutes:123}));
+vm.runInContext('setMode("work");startTimer()',ctx);
+ctx.document.hidden=false;ctx.document._h.visibilitychange();
+assert.strictEqual(els.sessions.textContent,7);
+assert.strictEqual(els.minutes.textContent,123);
+assert.strictEqual(vm.runInContext('isRunning',ctx),true);
+vm.runInContext('pauseTimer()',ctx);
