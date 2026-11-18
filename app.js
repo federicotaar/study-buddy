@@ -45,12 +45,15 @@ function loadTasks(){
   return Array.isArray(tasks) ? tasks.filter(t=>t && typeof t.text==='string').map(t=>({text:t.text,done:t.done===true})) : [];
  } catch(e){return []}
 }
-function saveTasks(tasks){localStorage.setItem(TASKS_KEY,JSON.stringify(tasks))}
+function saveTasks(tasks){
+ try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
+ catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
+}
 function renderTasks(){const tasks=loadTasks();taskList.innerHTML='';tasks.forEach((t,idx)=>{const li=document.createElement('li');li.className=t.done? 'task-done':'';li.innerHTML=`<input type=checkbox ${t.done? 'checked':''} data-idx='${idx}'> <span class='title'></span> <button data-del='${idx}'>Elimina</button>`;li.querySelector('.title').textContent=t.text;taskList.appendChild(li)})}
 
-taskForm.addEventListener('submit',e=>{e.preventDefault();const val=taskInput.value.trim();if(!val) return;const tasks=loadTasks();tasks.push({text:val,done:false});saveTasks(tasks);taskInput.value='';renderTasks();})
+taskForm.addEventListener('submit',e=>{e.preventDefault();const val=taskInput.value.trim();if(!val) return;const tasks=loadTasks();tasks.push({text:val,done:false});if(!saveTasks(tasks))return;taskInput.value='';renderTasks();})
 
-taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const tasks=loadTasks();if(typeof idx!=='undefined'){if(!/^\d+$/.test(idx)||!tasks[Number(idx)])return;tasks[idx].done=!tasks[idx].done;saveTasks(tasks);renderTasks();}else if(typeof del!=='undefined'){if(!/^\d+$/.test(del)||!tasks[Number(del)])return;tasks.splice(Number(del),1);saveTasks(tasks);renderTasks();}})
+taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const tasks=loadTasks();if(typeof idx!=='undefined'){if(!/^\d+$/.test(idx)||!tasks[Number(idx)])return;tasks[idx].done=!tasks[idx].done;if(!saveTasks(tasks))return;renderTasks();}else if(typeof del!=='undefined'){if(!/^\d+$/.test(del)||!tasks[Number(del)])return;tasks.splice(Number(del),1);if(!saveTasks(tasks))return;renderTasks();}})
 
 // Stats
 function loadStats(){try{const s=JSON.parse(localStorage.getItem(STATS_PREFIX+todayKey())||'{}')||{};const clean=n=>Number.isSafeInteger(Number(n))&&Number(n)>=0?Number(n):0;return {sessions:clean(s.sessions),minutes:clean(s.minutes)}}catch(e){return {sessions:0,minutes:0}}} 
