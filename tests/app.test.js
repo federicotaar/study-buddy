@@ -184,6 +184,7 @@ vm.runInContext('pauseTimer()',ctx);
 console.log('POMODORO LIFECYCLE REGRESSIONS PASS');
 
 // Timer timing is monotonic, rounds up and ignores callbacks after pause.
+els.workMinutes.value='40';
 ctx.performance.now=()=>1000;
 vm.runInContext('setMode("work");startTimer()',ctx);
 assert.ok(ctx.document.title.startsWith('40:00'));
@@ -249,3 +250,10 @@ console.log('MONOTONIC TIMER TESTS PASS');
  assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),1);
  ctx.localStorage.setItem=save;
 }
+
+
+// Reset all means default durations too, not just deleting the saved settings key.
+els.workMinutes.value='44';els.shortMinutes.value='9';els.longMinutes.value='30';
+ctx.window._studyBuddyResetAll();
+assert.deepStrictEqual([els.workMinutes.value,els.shortMinutes.value,els.longMinutes.value],['25','5','15']);
+assert.strictEqual(vm.runInContext('remaining',ctx),1500);
