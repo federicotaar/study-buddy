@@ -268,3 +268,14 @@ vm.runInContext('setMode("work");startTimer();onSessionEnd()',ctx);
  assert.strictEqual(JSON.stringify(vm.runInContext('loadStats()',ctx)),stats);
  assert.strictEqual(vm.runInContext('mode',ctx),nextMode);
 }
+
+
+// Checkboxes expose the task text as their accessible name without interpolating user text into HTML.
+store.set('studyBuddy:tasks',JSON.stringify([{text:'<b>read</b>',done:false}]));
+vm.runInContext('renderTasks()',ctx);
+{
+ const row=els.taskList.children.at(-1);
+ assert.ok(row.innerHTML.includes("aria-labelledby='task-title-0'"));
+ assert.ok(row.innerHTML.includes("id='task-title-0'"));
+ assert.ok(!row.innerHTML.includes('<b>read</b>'));
+}
