@@ -57,7 +57,10 @@ taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e
 
 // Stats
 function loadStats(){try{const s=JSON.parse(localStorage.getItem(STATS_PREFIX+todayKey())||'{}')||{};const clean=n=>Number.isSafeInteger(Number(n))&&Number(n)>=0?Number(n):0;return {sessions:clean(s.sessions),minutes:clean(s.minutes)}}catch(e){return {sessions:0,minutes:0}}} 
-function saveStats(s){localStorage.setItem(STATS_PREFIX+todayKey(),JSON.stringify(s))}
+function saveStats(s){
+ try {localStorage.setItem(STATS_PREFIX+todayKey(),JSON.stringify(s));return true;}
+ catch(e){alert('Impossibile salvare le statistiche di oggi nel browser.');return false;}
+}
 function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes}
 
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
@@ -74,7 +77,7 @@ function onSessionEnd(){
  // vibrate or alert
  try {if(typeof navigator.vibrate==='function') navigator.vibrate(400); else alert('Sessione terminata!');} catch(e) { /* notifications must not prevent accounting or the next mode */ }
  if(mode==='work'){// increment stats
-   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions=(completedWorkSessions+1)%4; localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));
+   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions=(completedWorkSessions+1)%4; try {localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));} catch(e) { /* current page still keeps the cycle */ }
  }
  // auto switch mode
  if(mode==='work'){ if(completedWorkSessions % 4 === 0) setMode('long'); else setMode('short'); }
