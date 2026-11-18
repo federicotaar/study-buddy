@@ -257,3 +257,14 @@ els.workMinutes.value='44';els.shortMinutes.value='9';els.longMinutes.value='30'
 ctx.window._studyBuddyResetAll();
 assert.deepStrictEqual([els.workMinutes.value,els.shortMinutes.value,els.longMinutes.value],['25','5','15']);
 assert.strictEqual(vm.runInContext('remaining',ctx),1500);
+
+
+// A duplicate callback after completion cannot credit a second work session.
+vm.runInContext('setMode("work");startTimer();onSessionEnd()',ctx);
+{
+ const stats=JSON.stringify(vm.runInContext('loadStats()',ctx));
+ const nextMode=vm.runInContext('mode',ctx);
+ vm.runInContext('onSessionEnd()',ctx);
+ assert.strictEqual(JSON.stringify(vm.runInContext('loadStats()',ctx)),stats);
+ assert.strictEqual(vm.runInContext('mode',ctx),nextMode);
+}
