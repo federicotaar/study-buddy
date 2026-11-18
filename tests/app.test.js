@@ -224,3 +224,15 @@ console.log('MONOTONIC TIMER TESTS PASS');
  assert.strictEqual(notices,1);
  ctx.localStorage.setItem=save;ctx.alert=notify;
 }
+
+
+// Failed settings persistence still invalidates the old running deadline.
+{
+ const save=ctx.localStorage.setItem;
+ vm.runInContext('setMode("work");startTimer()',ctx);
+ ctx.localStorage.setItem=()=>{throw Error('denied')};
+ els.workMinutes.value='17';els.workMinutes._h.change();
+ assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+ assert.strictEqual(vm.runInContext('remaining',ctx),1020);
+ ctx.localStorage.setItem=save;
+}
