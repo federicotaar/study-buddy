@@ -15,6 +15,7 @@ const els = {};
 const store = new Map();
 const ctx = {
   console,
+  performance: { now: () => 1000 },
   document: {
     getElementById: id => (els[id] = els[id] || makeEl()),
     createElement: () => makeEl(),
@@ -181,3 +182,20 @@ assert.strictEqual(JSON.parse(store.get('studyBuddy:tasks'))[0].text,'keep me');
 ctx.confirm=()=>true;
 vm.runInContext('pauseTimer()',ctx);
 console.log('POMODORO LIFECYCLE REGRESSIONS PASS');
+
+// Timer timing is monotonic, rounds up and ignores callbacks after pause.
+ctx.performance.now=()=>1000;
+vm.runInContext('setMode("work");startTimer()',ctx);
+assert.ok(ctx.document.title.startsWith('40:00'));
+ctx.performance.now=()=>1501;
+vm.runInContext('tick()',ctx);
+assert.strictEqual(vm.runInContext('remaining',ctx),2400);
+ctx.performance.now=()=>2501;
+vm.runInContext('pauseTimer()',ctx);
+assert.strictEqual(vm.runInContext('remaining',ctx),2399);
+const sessionsAtPause=vm.runInContext('loadStats().sessions',ctx);
+ctx.performance.now=()=>10000000;
+vm.runInContext('tick()',ctx);
+assert.strictEqual(vm.runInContext('loadStats().sessions',ctx),sessionsAtPause);
+assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+console.log('MONOTONIC TIMER TESTS PASS');
