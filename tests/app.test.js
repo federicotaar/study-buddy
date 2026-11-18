@@ -236,3 +236,16 @@ console.log('MONOTONIC TIMER TESTS PASS');
  assert.strictEqual(vm.runInContext('remaining',ctx),1020);
  ctx.localStorage.setItem=save;
 }
+
+
+// Completing work must stop the interval and advance to a break even if all writes fail.
+{
+ const save=ctx.localStorage.setItem;
+ vm.runInContext('completedWorkSessions=0;setMode("work");startTimer()',ctx);
+ ctx.localStorage.setItem=()=>{throw Error('quota')};
+ vm.runInContext('onSessionEnd()',ctx);
+ assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+ assert.strictEqual(vm.runInContext('mode',ctx),'short');
+ assert.strictEqual(vm.runInContext('completedWorkSessions',ctx),1);
+ ctx.localStorage.setItem=save;
+}
