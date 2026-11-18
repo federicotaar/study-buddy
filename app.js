@@ -29,7 +29,8 @@ let remaining = 25 * 60;
 let isRunning = false;
 let mode = 'work'; // 'work' | 'short' | 'long'
 let sessionMinutes = 25; // minutes credited when a work session ends, captured at start
-const storedCycle=Number(localStorage.getItem(CYCLE_KEY));
+let storedCycle=0;
+try { storedCycle=Number(localStorage.getItem(CYCLE_KEY)); } catch(e) { /* storage can be denied for local files or private sessions */ }
 let completedWorkSessions=Number.isSafeInteger(storedCycle)&&storedCycle>=0 ? storedCycle%4 : 0;
 
 // Utilities
