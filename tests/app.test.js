@@ -209,3 +209,18 @@ console.log('MONOTONIC TIMER TESTS PASS');
  assert.strictEqual(vm.runInContext('completedWorkSessions',denied),0);
  assert.ok(vm.runInContext('Number.isFinite(remaining)&&remaining>0',denied));
 }
+
+
+// A quota failure must not clear the draft or replace the stored task list.
+{
+ const save=ctx.localStorage.setItem, notify=ctx.alert;
+ let notices=0;ctx.alert=()=>notices++;
+ ctx.localStorage.setItem=()=>{throw Error('quota')};
+ els.taskInput.value='keep this draft';
+ const before=store.get('studyBuddy:tasks');
+ els.taskForm._h.submit({preventDefault(){}});
+ assert.strictEqual(els.taskInput.value,'keep this draft');
+ assert.strictEqual(store.get('studyBuddy:tasks'),before);
+ assert.strictEqual(notices,1);
+ ctx.localStorage.setItem=save;ctx.alert=notify;
+}
