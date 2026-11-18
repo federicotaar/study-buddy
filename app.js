@@ -92,7 +92,11 @@ startBtn.addEventListener('click',startTimer);pauseBtn.addEventListener('click',
 document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||(e.target&&e.target.isContentEditable))return;if(e.target&&/^(INPUT|TEXTAREA|BUTTON|SELECT)$/.test(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();if(isRunning)pauseTimer();else startTimer();}else if(e.key==='r'||e.key==='R'){if(confirm('Reimpostare il timer?')) resetTimer();}});
 
 // Settings persist
-[workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));pauseTimer();setMode(mode)})})
+[workInput,shortInput,longInput].forEach(inp=>{inp.addEventListener('change',()=>{
+ pauseTimer();setMode(mode);
+ try {localStorage.setItem('studyBuddy:settings',JSON.stringify({work:workInput.value,short:shortInput.value,long:longInput.value}));}
+ catch(e){alert('Impossibile salvare le impostazioni. Restano valide solo per questa pagina.');}
+})})
 
 function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s&&typeof s==='object'&&!Array.isArray(s)){for(const [key,input,max] of [['work',workInput,180],['short',shortInput,60],['long',longInput,120]]){const n=Number(s[key]);if(Number.isInteger(n)&&n>=1&&n<=max)input.value=String(n)}}}
 
