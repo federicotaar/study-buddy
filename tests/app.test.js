@@ -199,3 +199,13 @@ vm.runInContext('tick()',ctx);
 assert.strictEqual(vm.runInContext('loadStats().sessions',ctx),sessionsAtPause);
 assert.strictEqual(vm.runInContext('isRunning',ctx),false);
 console.log('MONOTONIC TIMER TESTS PASS');
+
+// A denied storage read at startup must not prevent timer initialization.
+{
+ const fresh={};
+ const denied={...ctx,document:{...ctx.document,_h:{},getElementById:id=>(fresh[id]=fresh[id]||makeEl())},localStorage:{getItem(){throw Error('denied')},setItem(){},removeItem(){}},window:{}};
+ vm.createContext(denied);
+ vm.runInContext(fs.readFileSync(__dirname+'/../app.js','utf8'),denied);
+ assert.strictEqual(vm.runInContext('completedWorkSessions',denied),0);
+ assert.ok(vm.runInContext('Number.isFinite(remaining)&&remaining>0',denied));
+}
