@@ -104,6 +104,9 @@ document.addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.altKey||e.meta
 
 function loadSettings(){let s=null;try{s=JSON.parse(localStorage.getItem('studyBuddy:settings')||'null')}catch(e){s=null}if(s&&typeof s==='object'&&!Array.isArray(s)){for(const [key,input,max] of [['work',workInput,180],['short',shortInput,60],['long',longInput,120]]){const n=Number(s[key]);if(Number.isInteger(n)&&n>=1&&n<=max)input.value=String(n)}}}
 
+// Refresh daily totals after an overnight tab resumes, without disturbing its timer.
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderStats();});
+
 // Init
 function init(){loadSettings();renderTasks();renderStats();setMode('work');updateTime();}
 init();
