@@ -90,7 +90,9 @@ function onSessionEnd(){
  if(!isRunning)return; // a stale completion callback must not credit another session
  pauseTimer(); // clear the old interval before notifications can block or throw
  // vibrate or alert
- try {if(typeof navigator.vibrate==='function') navigator.vibrate(400); else alert('Sessione terminata!');} catch(e) { /* notifications must not prevent accounting or the next mode */ }
+ // completion signal: short WebAudio beep, falling back to vibration, then alert
+ function beep(){try{const AC=window.AudioContext||window.webkitAudioContext;if(typeof AC!=='function')return false;const ac=beep._ctx||(beep._ctx=new AC());const osc=ac.createOscillator();const gain=ac.createGain();osc.type='sine';osc.frequency.value=880;gain.gain.setValueAtTime(0.15,ac.currentTime);gain.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.6);osc.connect(gain);gain.connect(ac.destination);osc.start();osc.stop(ac.currentTime+0.6);return true}catch(e){return false}}
+ try {if(!beep()){if(typeof navigator.vibrate==='function') navigator.vibrate(400); else alert('Sessione terminata!');}} catch(e) { /* notifications must not prevent accounting or the next mode */ }
  if(mode==='work'){// increment stats
    const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); appendSessionLog(added); completedWorkSessions=(completedWorkSessions+1)%4; try {localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));} catch(e) { /* current page still keeps the cycle */ }
  }
