@@ -125,6 +125,21 @@ assert.strictEqual(vm.runInContext('computeStreak()', ctx), 1);
 store.delete('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(1)', ctx));
 assert.strictEqual(vm.runInContext('computeStreak()', ctx), 0);
 
+// session log records completed work sessions, newest first, capped at 50
+store.clear();
+vm.runInContext('appendSessionLog(25); appendSessionLog(30)', ctx);
+let log = JSON.parse(JSON.stringify(vm.runInContext('loadSessionLog()', ctx)));
+assert.strictEqual(log.length, 2);
+assert.strictEqual(log[0].minutes, 30);
+assert.strictEqual(log[1].minutes, 25);
+store.set('studyBuddy:sessionLog', 'junk');
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadSessionLog()', ctx))), []);
+// a non-positive minutes value is rejected without touching the stored log
+store.set('studyBuddy:sessionLog', JSON.stringify([{day:'2026-11-19',minutes:25,endedAt:'x'}]));
+vm.runInContext('appendSessionLog(-5)', ctx);
+assert.strictEqual(JSON.parse(store.get('studyBuddy:sessionLog')).length, 1);
+vm.runInContext('localStorage.removeItem("studyBuddy:sessionLog")', ctx);
+
 // Editing settings invalidates an active timer rather than preserving its deadline.
 vm.runInContext('setMode("work");startTimer()',ctx);
 els.workMinutes.value='12';els.workMinutes._h.change();
