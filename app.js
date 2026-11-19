@@ -64,7 +64,9 @@ function saveStats(s){
  try {localStorage.setItem(STATS_PREFIX+todayKey(),JSON.stringify(s));return true;}
  catch(e){alert('Impossibile salvare le statistiche di oggi nel browser.');return false;}
 }
-function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes}
+const weekSessionsEl = $('weekSessions');
+const weekMinutesEl = $('weekMinutes');
+function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}}
 
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
 
