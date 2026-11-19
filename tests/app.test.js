@@ -118,6 +118,13 @@ store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(7)', ctx), '{"sess
 store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(3)', ctx), 'not json');
 assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadWeekStats()', ctx))), { sessions: 4, minutes: 95 });
 
+// streak counts consecutive days with sessions, today or yesterday as anchor
+assert.strictEqual(vm.runInContext('computeStreak()', ctx), 2);
+store.delete('studyBuddy:stats:' + vm.runInContext('todayKey()', ctx));
+assert.strictEqual(vm.runInContext('computeStreak()', ctx), 1);
+store.delete('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(1)', ctx));
+assert.strictEqual(vm.runInContext('computeStreak()', ctx), 0);
+
 // Editing settings invalidates an active timer rather than preserving its deadline.
 vm.runInContext('setMode("work");startTimer()',ctx);
 els.workMinutes.value='12';els.workMinutes._h.change();
