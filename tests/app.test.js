@@ -26,6 +26,8 @@ const ctx = {
     getItem: k => (store.has(k) ? store.get(k) : null),
     setItem: (k, v) => store.set(k, String(v)),
     removeItem: k => store.delete(k),
+    get length() { return store.size; },
+    key: i => [...store.keys()][i] ?? null,
   },
   navigator: {},
   window: {},
@@ -134,6 +136,14 @@ assert.strictEqual(log[0].minutes, 30);
 assert.strictEqual(log[1].minutes, 25);
 store.set('studyBuddy:sessionLog', 'junk');
 assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadSessionLog()', ctx))), []);
+
+// CSV export lists stored days oldest first with a header
+store.clear();
+store.set('studyBuddy:stats:2026-11-19', '{"sessions":2,"minutes":50}');
+store.set('studyBuddy:stats:2026-11-17', '{"sessions":1,"minutes":25}');
+store.set('studyBuddy:tasks', '[]');
+const csv = vm.runInContext('exportStatsCsv()', ctx);
+assert.strictEqual(csv, 'day,sessions,minutes\n2026-11-17,1,25\n2026-11-19,2,50');
 // a non-positive minutes value is rejected without touching the stored log
 store.set('studyBuddy:sessionLog', JSON.stringify([{day:'2026-11-19',minutes:25,endedAt:'x'}]));
 vm.runInContext('appendSessionLog(-5)', ctx);
