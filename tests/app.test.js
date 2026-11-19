@@ -144,6 +144,19 @@ store.set('studyBuddy:stats:2026-11-17', '{"sessions":1,"minutes":25}');
 store.set('studyBuddy:tasks', '[]');
 const csv = vm.runInContext('exportStatsCsv()', ctx);
 assert.strictEqual(csv, 'day,sessions,minutes\n2026-11-17,1,25\n2026-11-19,2,50');
+
+// session end with no AudioContext and no vibrate still credits the session
+store.clear();
+vm.runInContext('setMode("work"); startTimer(); onSessionEnd();', ctx);
+assert.strictEqual(vm.runInContext('loadStats()', ctx).sessions, 1);
+// and a working AudioContext path does not break accounting either
+let oscStarted = 0;
+ctx.window.AudioContext = function(){ return { currentTime: 0, destination: {},
+  createOscillator: () => ({ type: '', frequency: { value: 0 }, connect(){}, start(){ oscStarted++; }, stop(){} }),
+  createGain: () => ({ gain: { setValueAtTime(){}, exponentialRampToValueAtTime(){} }, connect(){} }) }; };
+vm.runInContext('setMode("work"); startTimer(); onSessionEnd();', ctx);
+assert.strictEqual(oscStarted, 1);
+assert.strictEqual(vm.runInContext('loadStats()', ctx).sessions, 2);
 // a non-positive minutes value is rejected without touching the stored log
 store.set('studyBuddy:sessionLog', JSON.stringify([{day:'2026-11-19',minutes:25,endedAt:'x'}]));
 vm.runInContext('appendSessionLog(-5)', ctx);
