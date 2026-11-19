@@ -71,6 +71,10 @@ const weekSessionsEl = $('weekSessions');
 const weekMinutesEl = $('weekMinutes');
 function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak()}
 
+// session history: last 50 completed work sessions, newest first
+const LOG_KEY = 'studyBuddy:sessionLog';
+function loadSessionLog(){try{const l=JSON.parse(localStorage.getItem(LOG_KEY)||'[]');return Array.isArray(l)?l.filter(e=>e&&typeof e.day==='string'&&Number.isSafeInteger(e.minutes)&&e.minutes>0):[]}catch(e){return []}}
+function appendSessionLog(minutes){if(!Number.isSafeInteger(minutes)||minutes<=0)return;const log=loadSessionLog();log.unshift({day:todayKey(),minutes,endedAt:new Date().toISOString()});try{localStorage.setItem(LOG_KEY,JSON.stringify(log.slice(0,50)))}catch(e){ /* history is best-effort */ }}
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
 
 // Timer core
@@ -86,7 +90,7 @@ function onSessionEnd(){
  // vibrate or alert
  try {if(typeof navigator.vibrate==='function') navigator.vibrate(400); else alert('Sessione terminata!');} catch(e) { /* notifications must not prevent accounting or the next mode */ }
  if(mode==='work'){// increment stats
-   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); completedWorkSessions=(completedWorkSessions+1)%4; try {localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));} catch(e) { /* current page still keeps the cycle */ }
+   const s=loadStats(); const added = sessionMinutes; s.sessions = (s.sessions||0) + 1; s.minutes = (s.minutes||0) + added; saveStats(s); renderStats(); appendSessionLog(added); completedWorkSessions=(completedWorkSessions+1)%4; try {localStorage.setItem(CYCLE_KEY,String(completedWorkSessions));} catch(e) { /* current page still keeps the cycle */ }
  }
  // auto switch mode
  if(mode==='work'){ if(completedWorkSessions % 4 === 0) setMode('long'); else setMode('short'); }
