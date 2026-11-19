@@ -58,13 +58,18 @@ taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e
 // Stats
 function dayKeyOffset(offset){const d=new Date();d.setDate(d.getDate()-offset);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function loadStatsFor(dayKey){try{const s=JSON.parse(localStorage.getItem(STATS_PREFIX+dayKey)||'{}')||{};const clean=n=>Number.isSafeInteger(Number(n))&&Number(n)>=0?Number(n):0;return {sessions:clean(s.sessions),minutes:clean(s.minutes)}}catch(e){return {sessions:0,minutes:0}}}
+// Current streak: consecutive days with at least one completed session, ending today or yesterday
+function computeStreak(){let streak=0;let i=loadStatsFor(dayKeyOffset(0)).sessions>0?0:1;while(loadStatsFor(dayKeyOffset(i)).sessions>0){streak++;i++}return streak}
 function loadWeekStats(){let sessions=0,minutes=0;for(let i=0;i<7;i++){const s=loadStatsFor(dayKeyOffset(i));sessions+=s.sessions;minutes+=s.minutes}return {sessions,minutes}}
 function loadStats(){return loadStatsFor(todayKey())} 
 function saveStats(s){
  try {localStorage.setItem(STATS_PREFIX+todayKey(),JSON.stringify(s));return true;}
  catch(e){alert('Impossibile salvare le statistiche di oggi nel browser.');return false;}
 }
-function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes}
+const streakEl = $('streak');
+const weekSessionsEl = $('weekSessions');
+const weekMinutesEl = $('weekMinutes');
+function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak()}
 
 resetStatsBtn.addEventListener('click',()=>{if(confirm('Resettare le statistiche di oggi?')){saveStats({sessions:0,minutes:0});renderStats()}})
 
