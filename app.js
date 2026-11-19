@@ -45,15 +45,17 @@ function loadTasks(){
   return Array.isArray(tasks) ? tasks.filter(t=>t && typeof t.text==='string').map(t=>({text:t.text,done:t.done===true})) : [];
  } catch(e){return []}
 }
+function editTask(idx,text){const tasks=loadTasks();if(!Number.isSafeInteger(idx)||!tasks[idx])return false;const val=(text||'').trim();if(!val)return false;tasks[idx].text=val;return saveTasks(tasks)}
+function moveTask(idx,delta){const tasks=loadTasks();const j=idx+delta;if(!Number.isSafeInteger(idx)||!tasks[idx]||!tasks[j])return false;[tasks[idx],tasks[j]]=[tasks[j],tasks[idx]];return saveTasks(tasks)}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
 }
-function renderTasks(){const tasks=loadTasks();taskList.innerHTML='';tasks.forEach((t,idx)=>{const li=document.createElement('li');li.className=t.done? 'task-done':'';li.innerHTML=`<input type=checkbox ${t.done? 'checked':''} data-idx='${idx}' aria-labelledby='task-title-${idx}'> <span class='title' id='task-title-${idx}'></span> <button data-del='${idx}'>Elimina</button>`;li.querySelector('.title').textContent=t.text;taskList.appendChild(li)})}
+function renderTasks(){const tasks=loadTasks();taskList.innerHTML='';tasks.forEach((t,idx)=>{const li=document.createElement('li');li.className=t.done? 'task-done':'';li.innerHTML=`<input type=checkbox ${t.done? 'checked':''} data-idx='${idx}' aria-labelledby='task-title-${idx}'> <span class='title' id='task-title-${idx}'></span> <button data-up='${idx}' aria-label='Sposta su'>&uarr;</button> <button data-down='${idx}' aria-label='Sposta gi&ugrave;'>&darr;</button> <button data-edit='${idx}'>Modifica</button> <button data-del='${idx}'>Elimina</button>`;li.querySelector('.title').textContent=t.text;taskList.appendChild(li)})}
 
 taskForm.addEventListener('submit',e=>{e.preventDefault();const val=taskInput.value.trim();if(!val) return;const tasks=loadTasks();tasks.push({text:val,done:false});if(!saveTasks(tasks))return;taskInput.value='';renderTasks();})
 
-taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const tasks=loadTasks();if(typeof idx!=='undefined'){if(!/^\d+$/.test(idx)||!tasks[Number(idx)])return;tasks[idx].done=!tasks[idx].done;if(!saveTasks(tasks))return;renderTasks();}else if(typeof del!=='undefined'){if(!/^\d+$/.test(del)||!tasks[Number(del)])return;tasks.splice(Number(del),1);if(!saveTasks(tasks))return;renderTasks();}})
+taskList.addEventListener('click',e=>{const idx=e.target.dataset.idx;const del=e.target.dataset.del;const up=e.target.dataset.up;const down=e.target.dataset.down;const edit=e.target.dataset.edit;const tasks=loadTasks();const valid=v=>/^\d+$/.test(v)&&tasks[Number(v)];if(typeof idx!=='undefined'){if(!valid(idx))return;tasks[Number(idx)].done=!tasks[Number(idx)].done;if(!saveTasks(tasks))return;renderTasks();}else if(typeof del!=='undefined'){if(!valid(del))return;tasks.splice(Number(del),1);if(!saveTasks(tasks))return;renderTasks();}else if(typeof up!=='undefined'){if(!valid(up))return;if(moveTask(Number(up),-1))renderTasks();}else if(typeof down!=='undefined'){if(!valid(down))return;if(moveTask(Number(down),1))renderTasks();}else if(typeof edit!=='undefined'){if(!valid(edit))return;const cur=tasks[Number(edit)].text;const next=prompt('Modifica il task:',cur);if(next===null)return;if(editTask(Number(edit),next))renderTasks();}})
 
 // Stats
 function dayKeyOffset(offset){const d=new Date();d.setDate(d.getDate()-offset);return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
