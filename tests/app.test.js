@@ -32,6 +32,7 @@ const ctx = {
   navigator: {},
   window: {},
   confirm: () => true,
+  prompt: () => 'x',
   alert: () => {},
   setInterval: () => 0,
   clearInterval: () => {},
@@ -157,6 +158,22 @@ ctx.window.AudioContext = function(){ return { currentTime: 0, destination: {},
 vm.runInContext('setMode("work"); startTimer(); onSessionEnd();', ctx);
 assert.strictEqual(oscStarted, 1);
 assert.strictEqual(vm.runInContext('loadStats()', ctx).sessions, 2);
+
+// task edit and reorder validate their input and persist
+store.clear();
+ctx.prompt = () => 'studia matematica';
+vm.runInContext('localStorage.setItem("studyBuddy:tasks", JSON.stringify([{text:"a",done:false},{text:"b",done:true}]))', ctx);
+assert.strictEqual(vm.runInContext('editTask(0,"  nuovo testo ")', ctx), true);
+assert.strictEqual(vm.runInContext('editTask(5,"x")', ctx), false);
+assert.strictEqual(vm.runInContext('editTask(0,"   ")', ctx), false);
+assert.strictEqual(vm.runInContext('moveTask(1,-1)', ctx), true);
+assert.strictEqual(vm.runInContext('moveTask(0,-1)', ctx), false);
+let tasks = JSON.parse(store.get('studyBuddy:tasks'));
+assert.strictEqual(tasks[0].text, 'b');
+assert.strictEqual(tasks[0].done, true);
+assert.strictEqual(tasks[1].text, 'nuovo testo');
+store.clear();
+vm.runInContext('setMode("work")', ctx);
 // a non-positive minutes value is rejected without touching the stored log
 store.set('studyBuddy:sessionLog', JSON.stringify([{day:'2026-11-19',minutes:25,endedAt:'x'}]));
 vm.runInContext('appendSessionLog(-5)', ctx);
