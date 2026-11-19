@@ -2,6 +2,15 @@
 
 Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti.
 
+## 2026-11-19
+
+- Totali settimanali (ultimi 7 giorni) nella card statistiche.
+- Serie attuale: giorni consecutivi con almeno una sessione completata.
+- Cronologia delle ultime 50 sessioni di lavoro (localStorage, chiave studyBuddy:sessionLog).
+- Esportazione CSV delle statistiche giornaliere (exportStatsCsv).
+- Segnale acustico WebAudio a fine sessione con fallback a vibrazione/avviso.
+- I task si possono ora modificare e riordinare (su/giu').
+
 ## 2026-11-15
 
 - Docs: il README elenca ora anche la chiave localStorage `studyBuddy:cycle` e la pausa lunga automatica ogni 4 sessioni di lavoro (entrambe gia' implementate in app.js).
