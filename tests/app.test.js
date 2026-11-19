@@ -108,6 +108,16 @@ for(const [field,modeName,max] of [['workMinutes','work',180],['shortMinutes','s
 }
 els.workMinutes.value='25';els.shortMinutes.value='5';els.longMinutes.value='15';
 
+// weekly totals sum today plus the previous 6 days, ignoring corrupt days
+store.clear();
+const dayKeyOffset = vm.runInContext('dayKeyOffset', ctx);
+store.set('studyBuddy:stats:' + vm.runInContext('todayKey()', ctx), '{"sessions":2,"minutes":50}');
+store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(1)', ctx), '{"sessions":1,"minutes":25}');
+store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(6)', ctx), '{"sessions":1,"minutes":20}');
+store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(7)', ctx), '{"sessions":9,"minutes":999}');
+store.set('studyBuddy:stats:' + vm.runInContext('dayKeyOffset(3)', ctx), 'not json');
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('loadWeekStats()', ctx))), { sessions: 4, minutes: 95 });
+
 // Editing settings invalidates an active timer rather than preserving its deadline.
 vm.runInContext('setMode("work");startTimer()',ctx);
 els.workMinutes.value='12';els.workMinutes._h.change();
