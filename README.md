@@ -5,8 +5,12 @@ Questa versione è client-side: non richiede backend. I dati vengono salvati nel
 
 Features:
 - Timer Pomodoro (work/short break/long break), con pausa lunga automatica ogni 4 sessioni di lavoro completate
-- Lista di task (add/complete/delete)
+- Lista di task (add/complete/delete, pi&ugrave; modifica e riordino su/gi&ugrave;)
 - Statistiche giornaliere: sessioni completate e minuti studiati
+- Totali settimanali (ultimi 7 giorni) e serie di giorni consecutivi con almeno una sessione
+- Cronologia delle ultime 50 sessioni di lavoro completate
+- Esportazione CSV di tutte le statistiche giornaliere (exportStatsCsv da console)
+- Segnale acustico (WebAudio) al termine di una sessione, con fallback a vibrazione/avviso
 - Countdown nel titolo della scheda mentre il timer è attivo
 - Scorciatoie da tastiera: Spazio = start/pausa, R = reset
 - Funziona offline: basta aprire index.html
@@ -32,6 +36,7 @@ Note per sviluppatori
   - `studyBuddy:tasks` → lista task
   - `studyBuddy:settings` → impostazioni dei minutes
   - `studyBuddy:stats:YYYY-MM-DD` → statistiche giornaliere
+  - `studyBuddy:sessionLog` → cronologia delle ultime 50 sessioni completate
   - `studyBuddy:cycle` → sessioni di lavoro completate nel ciclo corrente (scatta la pausa lunga ogni 4)
 - Test: `node tests/app.test.js` (stub di DOM e localStorage, nessuna dipendenza)
 
