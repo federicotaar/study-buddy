@@ -52,6 +52,17 @@
           <ul id="taskList"></ul>
         </div>
 
+        <div class="card data-card">
+          <h2>I tuoi dati</h2>
+          <p>Salva un backup locale. Il ripristino sostituisce task, impostazioni e statistiche di questa app.</p>
+          <div class="data-controls">
+            <button id="exportBackup" type="button">Scarica backup</button>
+            <button id="exportCsv" type="button">Statistiche CSV</button>
+            <label class="file-button">Ripristina backup <input id="importBackup" type="file" accept="application/json,.json"></label>
+          </div>
+          <p id="dataStatus" role="status" aria-live="polite"></p>
+        </div>
+
         <div class="card about-card">
           <h2>Info</h2>
           <p>Study Buddy è pensato per studiare con la tecnica Pomodoro e gestire i task. I dati restano nel tuo browser (localStorage).</p>
