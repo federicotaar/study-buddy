@@ -21,6 +21,7 @@ const resetStatsBtn = $('resetStats');
 // Storage keys
 const TASKS_KEY = 'studyBuddy:tasks';
 const STATS_PREFIX = 'studyBuddy:stats:'; // + YYYY-MM-DD
+const GOAL_KEY = 'studyBuddy:dailyGoal';
 const CYCLE_KEY = 'studyBuddy:cycle'; // completed work sessions in the current long-break cycle
 
 // Timer state
@@ -138,7 +139,7 @@ function studyStorageKeys(){
  const keys=[];
  for(let i=0;i<localStorage.length;i++){
   const key=localStorage.key(i);
-  if([TASKS_KEY,CYCLE_KEY,LOG_KEY,'studyBuddy:settings'].includes(key)||
+  if([TASKS_KEY,CYCLE_KEY,LOG_KEY,GOAL_KEY,'studyBuddy:settings'].includes(key)||
      (typeof key==='string'&&/^studyBuddy:stats:\d{4}-\d{2}-\d{2}$/.test(key)))keys.push(key);
  }
  return keys.sort();
@@ -160,6 +161,7 @@ function validateBackup(raw){
   const item=JSON.parse(value);
   let ok=false;
   if(key===TASKS_KEY)ok=Array.isArray(item)&&item.length<=1000&&item.every(t=>t&&typeof t.text==='string'&&t.text.trim()&&t.text.length<=2000&&typeof t.done==='boolean');
+  else if(key===GOAL_KEY)ok=Number.isInteger(item)&&item>=0&&item<=1440;
   else if(key===CYCLE_KEY)ok=Number.isInteger(item)&&item>=0&&item<4;
   else if(key==='studyBuddy:settings')ok=item&&typeof item==='object'&&!Array.isArray(item)&&[['work',180],['short',60],['long',120]].every(([k,max])=>Number.isInteger(Number(item[k]))&&Number(item[k])>=1&&Number(item[k])<=max);
   else if(key===LOG_KEY)ok=Array.isArray(item)&&item.length<=50&&item.every(e=>e&&validDay(e.day)&&Number.isInteger(e.minutes)&&e.minutes>0&&e.minutes<=180&&typeof e.endedAt==='string'&&Number.isFinite(Date.parse(e.endedAt)));
@@ -231,3 +233,18 @@ if(clearButton)clearButton.addEventListener('click',()=>{
 
 const taskSearch=$('taskSearch');
 if(taskSearch)taskSearch.addEventListener('input',renderTasks);
+
+// A goal is optional. Zero disables it; completed minutes never reset when it changes.
+function dailyGoal(){
+ try{const n=Number(localStorage.getItem(GOAL_KEY));return Number.isInteger(n)&&n>=0&&n<=1440?n:0;}
+ catch(e){return 0;}
+}
+function setDailyGoal(raw){
+ if(typeof raw!=='string'||!/^\d+$/.test(raw.trim()))return false;
+ const n=Number(raw.trim());if(!Number.isInteger(n)||n<0||n>1440)return false;
+ try{localStorage.setItem(GOAL_KEY,String(n));return true;}catch(e){return false;}
+}
+function goalProgress(){
+ const goal=dailyGoal(),minutes=loadStats().minutes;
+ return {goal,minutes,remaining:Math.max(0,goal-minutes),percent:goal?Math.min(100,Math.round(minutes/goal*100)):0};
+}
