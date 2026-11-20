@@ -228,3 +228,6 @@ if(clearButton)clearButton.addEventListener('click',()=>{
  if(!confirm('Eliminare tutti i task completati?'))return;
  const removed=clearCompletedTasks();if(removed!==false){renderTasks();dataMessage(removed+' task completati eliminati.');}
 });
+
+const taskSearch=$('taskSearch');
+if(taskSearch)taskSearch.addEventListener('input',renderTasks);
