@@ -31,3 +31,11 @@ footer{margin-top:8px;text-align:center;color:var(--muted)}
 
 /* Focus visibile per chi naviga da tastiera (scorciatoie Spazio/R) */
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Data controls stay usable on narrow screens, including the native file input. */
+.data-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.data-controls button,.file-button{padding:8px 10px;border:1px solid #475569;border-radius:6px;background:#1e293b;color:#e6eef8;font-size:.9rem;cursor:pointer}
+.file-button{display:block;max-width:100%}
+.file-button input{display:block;max-width:100%;margin-top:8px;font-size:.8rem}
+.data-card p{color:var(--muted);font-size:.9rem;line-height:1.5}
+#dataStatus:empty{display:none}
