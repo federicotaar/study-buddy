@@ -221,3 +221,10 @@ function clearCompletedTasks(){
  if(!saveTasks(pending))return false;
  return tasks.length-pending.length;
 }
+
+const clearButton=$('clearCompleted');
+if(clearButton)clearButton.addEventListener('click',()=>{
+ if(!loadTasks().some(t=>t.done)){dataMessage('Nessun task completato da eliminare.');return;}
+ if(!confirm('Eliminare tutti i task completati?'))return;
+ const removed=clearCompletedTasks();if(removed!==false){renderTasks();dataMessage(removed+' task completati eliminati.');}
+});
