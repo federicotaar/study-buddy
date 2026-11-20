@@ -47,3 +47,19 @@ MIT — vedi LICENSE
 Contribuire
 -----------
 Segnalazioni e proposte sono benvenute: apri una issue descrivendo cosa vorresti vedere (es. CI, deploy su GitHub Pages, autenticazione o un backend di sincronizzazione).
+
+
+## Backup locali, task e obiettivi
+
+La scheda "I tuoi dati" scarica un backup JSON o le statistiche giornaliere in
+CSV. Il ripristino JSON chiede conferma, sostituisce solo i dati di Study Buddy
+e ferma il timer. Prima di sostituire i dati, salva un backup aggiornato. Non
+viene caricato nulla su un server. Se lo spazio del browser non basta, l'app
+prova a ripristinare i dati precedenti e segnala l'esito. Conserva sempre il file
+originale: localStorage non sostituisce un backup su disco.
+
+Puoi cercare i task per testo ed eliminare quelli completati dopo una conferma.
+L'obiettivo giornaliero usa i minuti delle sessioni completate di oggi. Imposta
+un intero tra 1 e 1440 minuti; 0 lo disattiva. Cambiare l'obiettivo non modifica
+le statistiche. L'obiettivo e incluso nei backup JSON; i vecchi backup senza
+obiettivo restano validi e lo disattivano quando vengono ripristinati.
