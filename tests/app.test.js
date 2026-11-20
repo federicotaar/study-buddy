@@ -369,3 +369,12 @@ const backup=JSON.parse(vm.runInContext('exportBackup()',ctx));
 assert.strictEqual(backup.app,'study-buddy');assert.strictEqual(backup.version,1);
 assert.strictEqual(Object.keys(backup.entries).length,2);
 assert.ok(!JSON.stringify(backup).includes('other-app'));
+
+ctx.backupRaw=JSON.stringify(backup);
+assert.strictEqual(Object.keys(vm.runInContext('validateBackup(backupRaw)',ctx)).length,2);
+for(const entries of [{'other-app:secret':'"no"'},{'studyBuddy:stats:2026-02-30':'{"sessions":1,"minutes":1}'},{'studyBuddy:tasks':'[{"text":"x","done":"yes"}]'},{'studyBuddy:cycle':'4'}]){
+ ctx.badBackup=JSON.stringify({app:'study-buddy',version:1,entries});
+ assert.throws(()=>vm.runInContext('validateBackup(badBackup)',ctx));
+}
+ctx.badBackup=JSON.stringify({app:'study-buddy',version:2,entries:{}});
+assert.throws(()=>vm.runInContext('validateBackup(badBackup)',ctx));
