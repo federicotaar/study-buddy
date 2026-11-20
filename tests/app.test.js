@@ -409,3 +409,21 @@ els.taskSearch.value='english';els.taskList.children=[];vm.runInContext('renderT
 assert.strictEqual(els.taskList.children.length,1);
 assert.ok(els.taskList.children[0].innerHTML.includes("data-idx='1'"));
 els.taskSearch.value='';
+
+store.clear();
+assert.strictEqual(vm.runInContext('dailyGoal()',ctx),0);
+assert.strictEqual(vm.runInContext('setDailyGoal("60")',ctx),true);
+store.set('studyBuddy:stats:'+vm.runInContext('todayKey()',ctx),'{"sessions":2,"minutes":50}');
+assert.strictEqual(vm.runInContext('goalProgress().remaining',ctx),10);
+assert.strictEqual(vm.runInContext('goalProgress().percent',ctx),83);
+assert.strictEqual(vm.runInContext('setDailyGoal("25")',ctx),true);
+assert.strictEqual(vm.runInContext('goalProgress().percent',ctx),100);
+assert.strictEqual(vm.runInContext('goalProgress().remaining',ctx),0);
+assert.strictEqual(vm.runInContext('loadStats().minutes',ctx),50);
+for(const raw of ['-1','1.5','1441','60min','', '1e2']){
+ ctx.goalRaw=raw;assert.strictEqual(vm.runInContext('setDailyGoal(goalRaw)',ctx),false);
+}
+assert.strictEqual(vm.runInContext('dailyGoal()',ctx),25);
+ctx.goalBackup=vm.runInContext('exportBackup()',ctx);
+assert.strictEqual(JSON.parse(ctx.goalBackup).entries['studyBuddy:dailyGoal'],'25');
+assert.strictEqual(vm.runInContext('validateBackup(goalBackup)[GOAL_KEY]',ctx),'25');
