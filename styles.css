@@ -39,3 +39,13 @@ footer{margin-top:8px;text-align:center;color:var(--muted)}
 .file-button input{display:block;max-width:100%;margin-top:8px;font-size:.8rem}
 .data-card p{color:var(--muted);font-size:.9rem;line-height:1.5}
 #dataStatus:empty{display:none}
+
+#taskSummary{font-size:.9rem;color:var(--muted)}
+.task-search{display:block;margin-top:14px;color:var(--muted);font-size:.9rem}
+.task-search input,#taskInput{min-width:0;max-width:100%;padding:8px;border:1px solid #475569;border-radius:6px;background:#0f1724;color:inherit}
+.task-search input{display:block;width:100%;margin-top:6px}
+#taskForm{display:flex;gap:8px;flex-wrap:wrap}
+#taskInput{flex:1;min-width:120px}
+.tasks-card li{flex-wrap:wrap}
+.tasks-card li .title{flex:1 1 calc(100% - 40px);min-width:100px;overflow-wrap:anywhere}
+.left,.right{min-width:0}
