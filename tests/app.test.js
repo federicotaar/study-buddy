@@ -17,7 +17,7 @@ const ctx = {
   console,
   performance: { now: () => 1000 },
   document: {
-    getElementById: id => (els[id] = els[id] || makeEl()),
+    getElementById: id => (els[id] = els[id] || (id==='taskSearch'?{...makeEl(),value:''}:makeEl())),
     createElement: () => makeEl(),
     addEventListener(type, f) { (this._h = this._h || {})[type] = f; },
     title: '',
@@ -361,3 +361,11 @@ assert.strictEqual(els.sessions.textContent,7);
 assert.strictEqual(els.minutes.textContent,123);
 assert.strictEqual(vm.runInContext('isRunning',ctx),true);
 vm.runInContext('pauseTimer()',ctx);
+
+store.clear();store.set('other-app:secret','private');
+store.set('studyBuddy:tasks','[{"text":"saved","done":false}]');
+store.set('studyBuddy:stats:2026-11-20','{"sessions":2,"minutes":50}');
+const backup=JSON.parse(vm.runInContext('exportBackup()',ctx));
+assert.strictEqual(backup.app,'study-buddy');assert.strictEqual(backup.version,1);
+assert.strictEqual(Object.keys(backup.entries).length,2);
+assert.ok(!JSON.stringify(backup).includes('other-app'));
