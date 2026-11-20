@@ -400,3 +400,12 @@ store.set('studyBuddy:tasks','[{"text":"done","done":true}]');
 assert.strictEqual(vm.runInContext('clearCompletedTasks()',ctx),false);
 assert.strictEqual(JSON.parse(store.get('studyBuddy:tasks')).length,1);
 ctx.localStorage.setItem=originalSet;
+
+store.set('studyBuddy:tasks','[{"text":"Math 50%","done":false},{"text":"English","done":true}]');
+els.taskSearch.value='MATH';els.taskList.children=[];vm.runInContext('renderTasks()',ctx);
+assert.strictEqual(els.taskList.children.length,1);
+assert.ok(els.taskList.children[0].innerHTML.includes("data-idx='0'"));
+els.taskSearch.value='english';els.taskList.children=[];vm.runInContext('renderTasks()',ctx);
+assert.strictEqual(els.taskList.children.length,1);
+assert.ok(els.taskList.children[0].innerHTML.includes("data-idx='1'"));
+els.taskSearch.value='';
