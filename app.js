@@ -214,3 +214,10 @@ if(importInput)importInput.addEventListener('change',async()=>{
  }catch(e){dataMessage(e instanceof SyntaxError?'Il file non contiene un backup JSON valido.':e.message);}
  finally{importInput.value='';}
 });
+
+function clearCompletedTasks(){
+ const tasks=loadTasks(),pending=tasks.filter(t=>!t.done);
+ if(tasks.length===pending.length)return 0;
+ if(!saveTasks(pending))return false;
+ return tasks.length-pending.length;
+}
