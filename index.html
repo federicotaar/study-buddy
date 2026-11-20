@@ -38,6 +38,14 @@
           <p>Minuti studiati: <strong id="minutes">0</strong></p>
           <p>Questa settimana: <strong id="weekSessions">0</strong> sessioni, <strong id="weekMinutes">0</strong> minuti</p>
           <p>Serie attuale: <strong id="streak">0</strong> giorni</p>
+          <div class="daily-goal">
+            <form id="goalForm">
+              <label for="dailyGoal">Obiettivo giornaliero (minuti, 0 = disattivato)</label>
+              <div><input id="dailyGoal" type="number" min="0" max="1440" step="1" value="0"><button type="submit">Salva obiettivo</button></div>
+            </form>
+            <progress id="goalProgress" max="100" value="0" aria-label="Avanzamento obiettivo giornaliero"></progress>
+            <p id="goalStatus" role="status" aria-live="polite"></p>
+          </div>
           <button id="resetStats">Reset statistiche</button>
         </div>
       </section>
