@@ -72,7 +72,7 @@ function saveStats(s){
 const streakEl = $('streak');
 const weekSessionsEl = $('weekSessions');
 const weekMinutesEl = $('weekMinutes');
-function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak()}
+function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak();renderGoal()}
 
 // session history: last 50 completed work sessions, newest first
 const LOG_KEY = 'studyBuddy:sessionLog';
@@ -131,7 +131,7 @@ function init(){loadSettings();renderTasks();renderStats();setMode('work');updat
 init();
 
 // Optional: reset data helper (for debugging)
-window._studyBuddyResetAll = function(){if(confirm('Cancellare tutti i dati locali dello Study Buddy?')){pauseTimer();localStorage.removeItem(TASKS_KEY);localStorage.removeItem('studyBuddy:settings');workInput.value='25';shortInput.value='5';longInput.value='15';localStorage.removeItem(CYCLE_KEY);completedWorkSessions=0;localStorage.removeItem(STATS_PREFIX+todayKey());renderTasks();renderStats();setMode('work');updateTime();}}
+window._studyBuddyResetAll = function(){if(confirm('Cancellare tutti i dati locali dello Study Buddy?')){pauseTimer();localStorage.removeItem(TASKS_KEY);localStorage.removeItem('studyBuddy:settings');workInput.value='25';shortInput.value='5';longInput.value='15';localStorage.removeItem(CYCLE_KEY);localStorage.removeItem(GOAL_KEY);completedWorkSessions=0;localStorage.removeItem(STATS_PREFIX+todayKey());renderTasks();renderStats();setMode('work');updateTime();}}
 
 
 // Portable backups contain only this app's keys, never another app's storage.
@@ -248,3 +248,19 @@ function goalProgress(){
  const goal=dailyGoal(),minutes=loadStats().minutes;
  return {goal,minutes,remaining:Math.max(0,goal-minutes),percent:goal?Math.min(100,Math.round(minutes/goal*100)):0};
 }
+
+function renderGoal(){
+ const input=$('dailyGoal'),bar=$('goalProgress'),status=$('goalStatus');
+ if(!input||!bar||!status)return;
+ const p=goalProgress();input.value=String(p.goal);bar.value=p.percent;bar.hidden=p.goal===0;
+ status.textContent=p.goal===0?'Nessun obiettivo impostato.':p.remaining===0?
+  'Obiettivo raggiunto: '+p.minutes+' / '+p.goal+' minuti.':
+  p.minutes+' / '+p.goal+' minuti, ne mancano '+p.remaining+'.';
+}
+const goalForm=$('goalForm');
+if(goalForm)goalForm.addEventListener('submit',e=>{
+ e.preventDefault();
+ if(!setDailyGoal($('dailyGoal').value)){dataMessage('Inserisci un numero intero da 0 a 1440. Se lo spazio è esaurito, libera spazio e riprova.');return;}
+ renderGoal();dataMessage('Obiettivo salvato. Le statistiche non sono state modificate.');
+});
+renderGoal();
