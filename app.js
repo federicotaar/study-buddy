@@ -185,3 +185,32 @@ function restoreBackup(raw){
  loadSettings();renderTasks();renderStats();setMode('work');
  return Object.keys(entries).length;
 }
+
+function downloadStudyFile(name,text,type){
+ const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+const dataStatus=$('dataStatus');
+function dataMessage(text){if(dataStatus)dataStatus.textContent=text;}
+const backupButton=$('exportBackup');
+if(backupButton)backupButton.addEventListener('click',()=>{
+ try{downloadStudyFile('study-buddy-'+todayKey()+'.json',exportBackup(),'application/json');dataMessage('Backup scaricato. Conservalo in un posto sicuro.');}
+ catch(e){dataMessage('Impossibile creare il backup. I dati non sono stati modificati.');}
+});
+const csvButton=$('exportCsv');
+if(csvButton)csvButton.addEventListener('click',()=>{
+ try{downloadStudyFile('study-buddy-statistiche.csv',exportStatsCsv(),'text/csv;charset=utf-8');dataMessage('Statistiche CSV scaricate.');}
+ catch(e){dataMessage('Impossibile esportare le statistiche.');}
+});
+const importInput=$('importBackup');
+if(importInput)importInput.addEventListener('change',async()=>{
+ const file=importInput.files&&importInput.files[0];if(!file)return;
+ try{
+  if(file.size>2*1024*1024)throw Error('Backup troppo grande (massimo 2 MB).');
+  const raw=await file.text();validateBackup(raw);
+  if(!confirm('Sostituire tutti i dati di Study Buddy con questo backup?'))return;
+  restoreBackup(raw);dataMessage('Backup ripristinato. Il timer è fermo.');
+ }catch(e){dataMessage(e instanceof SyntaxError?'Il file non contiene un backup JSON valido.':e.message);}
+ finally{importInput.value='';}
+});
