@@ -378,3 +378,15 @@ for(const entries of [{'other-app:secret':'"no"'},{'studyBuddy:stats:2026-02-30'
 }
 ctx.badBackup=JSON.stringify({app:'study-buddy',version:2,entries:{}});
 assert.throws(()=>vm.runInContext('validateBackup(badBackup)',ctx));
+
+store.set('studyBuddy:tasks','[{"text":"temporary","done":true}]');
+vm.runInContext('restoreBackup(backupRaw)',ctx);
+assert.strictEqual(JSON.parse(store.get('studyBuddy:tasks'))[0].text,'saved');
+assert.strictEqual(store.get('other-app:secret'),'private');
+assert.strictEqual(vm.runInContext('isRunning',ctx),false);
+const originalSet=ctx.localStorage.setItem;
+let failOnce=true;ctx.localStorage.setItem=(k,v)=>{if(failOnce){failOnce=false;throw Error('quota');}return originalSet(k,v);};
+const beforeRestore=JSON.stringify([...store]);
+assert.throws(()=>vm.runInContext('restoreBackup(backupRaw)',ctx));
+assert.strictEqual(JSON.stringify([...store]),beforeRestore);
+ctx.localStorage.setItem=originalSet;
