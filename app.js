@@ -168,3 +168,20 @@ function validateBackup(raw){
  }
  return entries;
 }
+
+function restoreBackup(raw){
+ const entries=validateBackup(raw);
+ const old=new Map(studyStorageKeys().map(k=>[k,localStorage.getItem(k)]));
+ try{
+  for(const key of old.keys())localStorage.removeItem(key);
+  for(const [key,value] of Object.entries(entries))localStorage.setItem(key,value);
+ }catch(error){
+  try{for(const key of studyStorageKeys())localStorage.removeItem(key);for(const [key,value] of old)localStorage.setItem(key,value);}
+  catch(rollback){throw Error('Ripristino non riuscito. Conserva il file di backup e non chiudere questa pagina.');}
+  throw Error('Spazio insufficiente: i dati precedenti sono stati ripristinati.');
+ }
+ pauseTimer();completedWorkSessions=Number(localStorage.getItem(CYCLE_KEY)||0);
+ workInput.value='25';shortInput.value='5';longInput.value='15';
+ loadSettings();renderTasks();renderStats();setMode('work');
+ return Object.keys(entries).length;
+}
