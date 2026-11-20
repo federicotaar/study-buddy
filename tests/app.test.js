@@ -427,3 +427,18 @@ assert.strictEqual(vm.runInContext('dailyGoal()',ctx),25);
 ctx.goalBackup=vm.runInContext('exportBackup()',ctx);
 assert.strictEqual(JSON.parse(ctx.goalBackup).entries['studyBuddy:dailyGoal'],'25');
 assert.strictEqual(vm.runInContext('validateBackup(goalBackup)[GOAL_KEY]',ctx),'25');
+
+els.dailyGoal.value='100';els.goalForm._h.submit({preventDefault(){}});
+assert.strictEqual(vm.runInContext('dailyGoal()',ctx),100);
+assert.strictEqual(els.goalProgress.value,50);
+assert.ok(els.goalStatus.textContent.includes('ne mancano 50'));
+ctx.goalBackup=vm.runInContext('exportBackup()',ctx);
+vm.runInContext('setDailyGoal("0");renderGoal()',ctx);
+assert.strictEqual(els.goalProgress.hidden,true);
+vm.runInContext('restoreBackup(goalBackup)',ctx);
+assert.strictEqual(vm.runInContext('dailyGoal()',ctx),100);
+assert.strictEqual(els.goalProgress.hidden,false);
+assert.strictEqual(els.goalProgress.value,50);
+vm.runInContext('saveStats({sessions:4,minutes:120});renderStats()',ctx);
+assert.strictEqual(els.goalProgress.value,100);
+assert.ok(els.goalStatus.textContent.includes('raggiunto'));
