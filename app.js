@@ -131,3 +131,19 @@ init();
 
 // Optional: reset data helper (for debugging)
 window._studyBuddyResetAll = function(){if(confirm('Cancellare tutti i dati locali dello Study Buddy?')){pauseTimer();localStorage.removeItem(TASKS_KEY);localStorage.removeItem('studyBuddy:settings');workInput.value='25';shortInput.value='5';longInput.value='15';localStorage.removeItem(CYCLE_KEY);completedWorkSessions=0;localStorage.removeItem(STATS_PREFIX+todayKey());renderTasks();renderStats();setMode('work');updateTime();}}
+
+
+// Portable backups contain only this app's keys, never another app's storage.
+function studyStorageKeys(){
+ const keys=[];
+ for(let i=0;i<localStorage.length;i++){
+  const key=localStorage.key(i);
+  if([TASKS_KEY,CYCLE_KEY,LOG_KEY,'studyBuddy:settings'].includes(key)||
+     (typeof key==='string'&&/^studyBuddy:stats:\d{4}-\d{2}-\d{2}$/.test(key)))keys.push(key);
+ }
+ return keys.sort();
+}
+function exportBackup(){
+ const entries={};for(const key of studyStorageKeys())entries[key]=localStorage.getItem(key);
+ return JSON.stringify({app:'study-buddy',version:1,exportedAt:new Date().toISOString(),entries},null,2);
+}
