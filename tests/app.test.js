@@ -390,3 +390,13 @@ const beforeRestore=JSON.stringify([...store]);
 assert.throws(()=>vm.runInContext('restoreBackup(backupRaw)',ctx));
 assert.strictEqual(JSON.stringify([...store]),beforeRestore);
 ctx.localStorage.setItem=originalSet;
+
+store.set('studyBuddy:tasks','[{"text":"done","done":true},{"text":"keep","done":false}]');
+assert.strictEqual(vm.runInContext('clearCompletedTasks()',ctx),1);
+assert.strictEqual(vm.runInContext('loadTasks()[0].text',ctx),'keep');
+assert.strictEqual(vm.runInContext('clearCompletedTasks()',ctx),0);
+ctx.localStorage.setItem=()=>{throw Error('blocked');};
+store.set('studyBuddy:tasks','[{"text":"done","done":true}]');
+assert.strictEqual(vm.runInContext('clearCompletedTasks()',ctx),false);
+assert.strictEqual(JSON.parse(store.get('studyBuddy:tasks')).length,1);
+ctx.localStorage.setItem=originalSet;
