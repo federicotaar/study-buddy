@@ -147,3 +147,24 @@ function exportBackup(){
  const entries={};for(const key of studyStorageKeys())entries[key]=localStorage.getItem(key);
  return JSON.stringify({app:'study-buddy',version:1,exportedAt:new Date().toISOString(),entries},null,2);
 }
+
+function validateBackup(raw){
+ if(typeof raw!=='string'||raw.length>2*1024*1024)throw Error('Backup troppo grande.');
+ const data=JSON.parse(raw),entries=data&&data.entries;
+ if(!data||data.app!=='study-buddy'||data.version!==1||!entries||typeof entries!=='object'||Array.isArray(entries)||Object.keys(entries).length>10000)
+  throw Error('Formato backup non valido.');
+ const validDay=d=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&Number.isFinite(Date.parse(d+'T00:00:00Z'))&&new Date(d+'T00:00:00Z').toISOString().slice(0,10)===d;
+ const nonnegative=n=>Number.isSafeInteger(n)&&n>=0;
+ for(const [key,value] of Object.entries(entries)){
+  if(typeof value!=='string')throw Error('Valore backup non valido.');
+  const item=JSON.parse(value);
+  let ok=false;
+  if(key===TASKS_KEY)ok=Array.isArray(item)&&item.length<=1000&&item.every(t=>t&&typeof t.text==='string'&&t.text.trim()&&t.text.length<=2000&&typeof t.done==='boolean');
+  else if(key===CYCLE_KEY)ok=Number.isInteger(item)&&item>=0&&item<4;
+  else if(key==='studyBuddy:settings')ok=item&&typeof item==='object'&&!Array.isArray(item)&&[['work',180],['short',60],['long',120]].every(([k,max])=>Number.isInteger(Number(item[k]))&&Number(item[k])>=1&&Number(item[k])<=max);
+  else if(key===LOG_KEY)ok=Array.isArray(item)&&item.length<=50&&item.every(e=>e&&validDay(e.day)&&Number.isInteger(e.minutes)&&e.minutes>0&&e.minutes<=180&&typeof e.endedAt==='string'&&Number.isFinite(Date.parse(e.endedAt)));
+  else if(key.startsWith(STATS_PREFIX)&&validDay(key.slice(STATS_PREFIX.length)))ok=item&&nonnegative(item.sessions)&&nonnegative(item.minutes);
+  if(!ok)throw Error('Dati non validi nel backup.');
+ }
+ return entries;
+}
