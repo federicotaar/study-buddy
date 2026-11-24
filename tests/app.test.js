@@ -477,3 +477,8 @@ assert.strictEqual(vm.runInContext('computeLongestStreak()',ctx),0);
 store.clear();store.set('studyBuddy:stats:2026-02-01','{"sessions":2,"minutes":50}');store.set('studyBuddy:stats:2026-02-02','{"sessions":1,"minutes":25}');
 vm.runInContext('renderStats()',ctx);
 assert.strictEqual(String(els.bestStreak.textContent),'2');
+
+store.clear();
+assert.strictEqual(vm.runInContext('averageSessionMinutes()',ctx),0);
+vm.runInContext('saveStats({sessions:2,minutes:45})',ctx);
+assert.strictEqual(vm.runInContext('averageSessionMinutes()',ctx),23);
