@@ -50,6 +50,7 @@ function loadTasks(){
 }
 function hasTask(text){const key=String(text||'').trim().toLocaleLowerCase();return !!key&&loadTasks().some(t=>t.text.trim().toLocaleLowerCase()===key)}
 function editTask(idx,text){const tasks=loadTasks();if(!Number.isSafeInteger(idx)||!tasks[idx])return false;const val=(text||'').trim();if(!val||val.length>MAX_TASK_LENGTH)return false;tasks[idx].text=val;return saveTasks(tasks)}
+function setAllTasksDone(done){const tasks=loadTasks();if(!tasks.length)return 0;let changed=0;for(const t of tasks){if(t.done!==!!done){t.done=!!done;changed++}}if(!changed)return 0;return saveTasks(tasks)?changed:false}
 function moveTask(idx,delta){const tasks=loadTasks();const j=idx+delta;if(!Number.isSafeInteger(idx)||!tasks[idx]||!tasks[j])return false;[tasks[idx],tasks[j]]=[tasks[j],tasks[idx]];return saveTasks(tasks)}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
