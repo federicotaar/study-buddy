@@ -84,6 +84,7 @@ function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;min
 // session history: last 50 completed work sessions, newest first
 const LOG_KEY = 'studyBuddy:sessionLog';
 function loadSessionLog(){try{const l=JSON.parse(localStorage.getItem(LOG_KEY)||'[]');return Array.isArray(l)?l.filter(e=>e&&typeof e.day==='string'&&Number.isSafeInteger(e.minutes)&&e.minutes>0):[]}catch(e){return []}}
+function recentSessionLines(limit){return loadSessionLog().slice(0,Math.max(0,limit|0)).map(e=>e.day+' - '+e.minutes+' min')}
 function appendSessionLog(minutes){if(!Number.isSafeInteger(minutes)||minutes<=0)return;const log=loadSessionLog();log.unshift({day:todayKey(),minutes,endedAt:new Date().toISOString()});try{localStorage.setItem(LOG_KEY,JSON.stringify(log.slice(0,50)))}catch(e){ /* history is best-effort */ }}
 // CSV export of every stored daily stat, oldest first (for spreadsheets/backups)
 function exportStatsCsv(){const rows=['day,sessions,minutes'];const keys=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(STATS_PREFIX)===0)keys.push(k)}}catch(e){ /* storage listing can be denied */ }keys.sort();for(const k of keys){const day=k.slice(STATS_PREFIX.length);if(!/^\d{4}-\d{2}-\d{2}$/.test(day))continue;const s=loadStatsFor(day);rows.push(`${day},${s.sessions},${s.minutes}`)}return rows.join('\n')}
