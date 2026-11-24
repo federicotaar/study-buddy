@@ -69,6 +69,7 @@ function computeStreak(){let streak=0;let i=loadStatsFor(dayKeyOffset(0)).sessio
 // Longest run of consecutive days with at least one session, over every stored day
 function computeLongestStreak(){const days=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(STATS_PREFIX)===0){const d=k.slice(STATS_PREFIX.length);if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&loadStatsFor(d).sessions>0)days.push(d)}}}catch(e){return 0}days.sort();let best=0,run=0,prev=null;for(const d of days){const t=Date.parse(d+'T00:00:00Z');run=prev!==null&&t-prev===86400000?run+1:1;prev=t;if(run>best)best=run}return best}
 function loadWeekStats(){let sessions=0,minutes=0;for(let i=0;i<7;i++){const s=loadStatsFor(dayKeyOffset(i));sessions+=s.sessions;minutes+=s.minutes}return {sessions,minutes}}
+function averageSessionMinutes(){const w=loadWeekStats();return w.sessions>0?Math.round(w.minutes/w.sessions):0}
 function loadStats(){return loadStatsFor(todayKey())} 
 function saveStats(s){
  try {localStorage.setItem(STATS_PREFIX+todayKey(),JSON.stringify(s));return true;}
