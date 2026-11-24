@@ -473,3 +473,7 @@ store.set('studyBuddy:stats:2026-01-04','{"sessions":0,"minutes":0}');
 assert.strictEqual(vm.runInContext('computeLongestStreak()',ctx),3);
 store.clear();
 assert.strictEqual(vm.runInContext('computeLongestStreak()',ctx),0);
+
+store.clear();store.set('studyBuddy:stats:2026-02-01','{"sessions":2,"minutes":50}');store.set('studyBuddy:stats:2026-02-02','{"sessions":1,"minutes":25}');
+vm.runInContext('renderStats()',ctx);
+assert.strictEqual(String(els.bestStreak.textContent),'2');
