@@ -499,3 +499,11 @@ assert.strictEqual(vm.runInContext('loadTasks().every(t=>t.done)',ctx),true);
 assert.strictEqual(els.toggleAll.textContent,'Riapri tutti');
 els.toggleAll._h.click();
 assert.strictEqual(vm.runInContext('loadTasks().some(t=>t.done)',ctx),false);
+
+store.clear();
+vm.runInContext('appendSessionLog(25);appendSessionLog(50);appendSessionLog(5)',ctx);
+const lines=vm.runInContext('recentSessionLines(2)',ctx);
+assert.strictEqual(lines.length,2);
+assert.ok(lines[0].endsWith(' - 5 min'));
+assert.ok(lines[1].endsWith(' - 50 min'));
+assert.strictEqual(vm.runInContext('recentSessionLines(0).length',ctx),0);
