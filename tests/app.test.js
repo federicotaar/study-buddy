@@ -482,3 +482,11 @@ store.clear();
 assert.strictEqual(vm.runInContext('averageSessionMinutes()',ctx),0);
 vm.runInContext('saveStats({sessions:2,minutes:45})',ctx);
 assert.strictEqual(vm.runInContext('averageSessionMinutes()',ctx),23);
+
+store.clear();
+vm.runInContext('saveTasks([{text:"a",done:false},{text:"b",done:true},{text:"c",done:false}])',ctx);
+assert.strictEqual(vm.runInContext('setAllTasksDone(true)',ctx),2);
+assert.strictEqual(vm.runInContext('loadTasks().every(t=>t.done)',ctx),true);
+assert.strictEqual(vm.runInContext('setAllTasksDone(true)',ctx),0);
+assert.strictEqual(vm.runInContext('setAllTasksDone(false)',ctx),3);
+assert.strictEqual(vm.runInContext('loadTasks().some(t=>t.done)',ctx),false);
