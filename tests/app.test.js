@@ -454,3 +454,8 @@ assert.strictEqual(vm.runInContext('loadTasks().length',ctx),0);
 els.taskInput.value='x'.repeat(2000);els.taskForm._h.submit({preventDefault(){}});
 assert.strictEqual(vm.runInContext('loadTasks().length',ctx),1);
 assert.doesNotThrow(()=>vm.runInContext('validateBackup(exportBackup())',ctx));
+
+assert.strictEqual(vm.runInContext('editTask(0,"   ")',ctx),false);
+assert.strictEqual(vm.runInContext('editTask(0,"y".repeat(2001))',ctx),false);
+assert.strictEqual(vm.runInContext('editTask(0,"nuovo testo")',ctx),true);
+assert.strictEqual(vm.runInContext('loadTasks()[0].text',ctx),'nuovo testo');
