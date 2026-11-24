@@ -442,3 +442,8 @@ assert.strictEqual(els.goalProgress.value,50);
 vm.runInContext('saveStats({sessions:4,minutes:120});renderStats()',ctx);
 assert.strictEqual(els.goalProgress.value,100);
 assert.ok(els.goalStatus.textContent.includes('raggiunto'));
+
+assert.strictEqual(vm.runInContext('formatTime(-5)',ctx),'00:00');
+assert.strictEqual(vm.runInContext('formatTime(NaN)',ctx),'00:00');
+assert.strictEqual(vm.runInContext('formatTime(61.9)',ctx),'01:01');
+assert.strictEqual(vm.runInContext('formatTime(3600)',ctx),'60:00');
