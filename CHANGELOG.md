@@ -2,6 +2,15 @@
 
 Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti.
 
+## 2026-11-24
+
+- I task piu' lunghi di 2000 caratteri non vengono piu' accettati (prima potevano rendere impossibile il ripristino di un backup).
+- Niente task duplicati (confronto senza maiuscole) e massimo 1000 task.
+- Serie migliore e durata media delle sessioni nella card statistiche.
+- Elenco delle ultime cinque sessioni completate.
+- Pulsante per completare o riaprire tutti i task.
+- formatTime non mostra piu' valori negativi o NaN.
+
 ## 2026-11-19
 
 - Totali settimanali (ultimi 7 giorni) nella card statistiche.
