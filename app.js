@@ -22,6 +22,8 @@ const resetStatsBtn = $('resetStats');
 const TASKS_KEY = 'studyBuddy:tasks';
 const STATS_PREFIX = 'studyBuddy:stats:'; // + YYYY-MM-DD
 const GOAL_KEY = 'studyBuddy:dailyGoal';
+const MAX_TASK_LENGTH = 2000; // same limit validateBackup enforces, so backups always restore
+const MAX_TASKS = 1000;
 const CYCLE_KEY = 'studyBuddy:cycle'; // completed work sessions in the current long-break cycle
 
 // Timer state
