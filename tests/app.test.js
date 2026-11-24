@@ -466,3 +466,10 @@ els.taskInput.value='  ripassa STORIA ';els.taskForm._h.submit({preventDefault()
 assert.strictEqual(vm.runInContext('loadTasks().length',ctx),1);
 assert.strictEqual(vm.runInContext('hasTask("RIPASSA storia")',ctx),true);
 assert.strictEqual(vm.runInContext('hasTask("")',ctx),false);
+
+store.clear();
+for(const d of ['2026-01-01','2026-01-02','2026-01-03','2026-01-05','2026-01-06'])store.set('studyBuddy:stats:'+d,'{"sessions":1,"minutes":25}');
+store.set('studyBuddy:stats:2026-01-04','{"sessions":0,"minutes":0}');
+assert.strictEqual(vm.runInContext('computeLongestStreak()',ctx),3);
+store.clear();
+assert.strictEqual(vm.runInContext('computeLongestStreak()',ctx),0);
