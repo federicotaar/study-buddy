@@ -459,3 +459,10 @@ assert.strictEqual(vm.runInContext('editTask(0,"   ")',ctx),false);
 assert.strictEqual(vm.runInContext('editTask(0,"y".repeat(2001))',ctx),false);
 assert.strictEqual(vm.runInContext('editTask(0,"nuovo testo")',ctx),true);
 assert.strictEqual(vm.runInContext('loadTasks()[0].text',ctx),'nuovo testo');
+
+store.clear();
+els.taskInput.value='Ripassa storia';els.taskForm._h.submit({preventDefault(){}});
+els.taskInput.value='  ripassa STORIA ';els.taskForm._h.submit({preventDefault(){}});
+assert.strictEqual(vm.runInContext('loadTasks().length',ctx),1);
+assert.strictEqual(vm.runInContext('hasTask("RIPASSA storia")',ctx),true);
+assert.strictEqual(vm.runInContext('hasTask("")',ctx),false);
