@@ -238,6 +238,8 @@ if(clearButton)clearButton.addEventListener('click',()=>{
  const removed=clearCompletedTasks();if(removed!==false){renderTasks();dataMessage(removed+' task completati eliminati.');}
 });
 
+function updateToggleAll(){const toggleAllButton=$('toggleAll');if(toggleAllButton)toggleAllButton.textContent=loadTasks().length&&loadTasks().every(t=>t.done)?'Riapri tutti':'Completa tutti'}
+const toggleAllButton=$('toggleAll');if(toggleAllButton)toggleAllButton.addEventListener('click',()=>{const tasks=loadTasks();if(!tasks.length)return;const result=setAllTasksDone(!tasks.every(t=>t.done));if(result!==false){renderTasks();}});
 const taskSearch=$('taskSearch');
 if(taskSearch)taskSearch.addEventListener('input',renderTasks);
 
