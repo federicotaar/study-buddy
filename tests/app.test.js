@@ -507,3 +507,8 @@ assert.strictEqual(lines.length,2);
 assert.ok(lines[0].endsWith(' - 5 min'));
 assert.ok(lines[1].endsWith(' - 50 min'));
 assert.strictEqual(vm.runInContext('recentSessionLines(0).length',ctx),0);
+
+store.clear();els.sessionHistory.children=[];
+vm.runInContext('appendSessionLog(30);renderStats()',ctx);
+assert.strictEqual(els.sessionHistory.children.length,1);
+assert.ok(els.sessionHistory.children[0].textContent.endsWith(' - 30 min'));
