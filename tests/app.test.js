@@ -490,3 +490,12 @@ assert.strictEqual(vm.runInContext('loadTasks().every(t=>t.done)',ctx),true);
 assert.strictEqual(vm.runInContext('setAllTasksDone(true)',ctx),0);
 assert.strictEqual(vm.runInContext('setAllTasksDone(false)',ctx),3);
 assert.strictEqual(vm.runInContext('loadTasks().some(t=>t.done)',ctx),false);
+
+store.clear();
+vm.runInContext('saveTasks([{text:"a",done:false},{text:"b",done:false}]);renderTasks()',ctx);
+assert.strictEqual(els.toggleAll.textContent,'Completa tutti');
+els.toggleAll._h.click();
+assert.strictEqual(vm.runInContext('loadTasks().every(t=>t.done)',ctx),true);
+assert.strictEqual(els.toggleAll.textContent,'Riapri tutti');
+els.toggleAll._h.click();
+assert.strictEqual(vm.runInContext('loadTasks().some(t=>t.done)',ctx),false);
