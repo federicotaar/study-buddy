@@ -66,6 +66,8 @@ function dayKeyOffset(offset){const d=new Date();d.setDate(d.getDate()-offset);r
 function loadStatsFor(dayKey){try{const s=JSON.parse(localStorage.getItem(STATS_PREFIX+dayKey)||'{}')||{};const clean=n=>Number.isSafeInteger(Number(n))&&Number(n)>=0?Number(n):0;return {sessions:clean(s.sessions),minutes:clean(s.minutes)}}catch(e){return {sessions:0,minutes:0}}}
 // Current streak: consecutive days with at least one completed session, ending today or yesterday
 function computeStreak(){let streak=0;let i=loadStatsFor(dayKeyOffset(0)).sessions>0?0:1;while(loadStatsFor(dayKeyOffset(i)).sessions>0){streak++;i++}return streak}
+// Longest run of consecutive days with at least one session, over every stored day
+function computeLongestStreak(){const days=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(STATS_PREFIX)===0){const d=k.slice(STATS_PREFIX.length);if(/^\d{4}-\d{2}-\d{2}$/.test(d)&&loadStatsFor(d).sessions>0)days.push(d)}}}catch(e){return 0}days.sort();let best=0,run=0,prev=null;for(const d of days){const t=Date.parse(d+'T00:00:00Z');run=prev!==null&&t-prev===86400000?run+1:1;prev=t;if(run>best)best=run}return best}
 function loadWeekStats(){let sessions=0,minutes=0;for(let i=0;i<7;i++){const s=loadStatsFor(dayKeyOffset(i));sessions+=s.sessions;minutes+=s.minutes}return {sessions,minutes}}
 function loadStats(){return loadStatsFor(todayKey())} 
 function saveStats(s){
