@@ -77,7 +77,7 @@ function saveStats(s){
 const streakEl = $('streak');
 const weekSessionsEl = $('weekSessions');
 const weekMinutesEl = $('weekMinutes');
-function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak();renderGoal()}
+function renderStats(){const s=loadStats();sessionsEl.textContent=s.sessions;minutesEl.textContent=s.minutes;if(weekSessionsEl&&weekMinutesEl){const w=loadWeekStats();weekSessionsEl.textContent=w.sessions;weekMinutesEl.textContent=w.minutes}if(streakEl)streakEl.textContent=computeStreak();const bestEl=$('bestStreak');if(bestEl)bestEl.textContent=computeLongestStreak();renderGoal()}
 
 // session history: last 50 completed work sessions, newest first
 const LOG_KEY = 'studyBuddy:sessionLog';
