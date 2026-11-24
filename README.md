@@ -63,3 +63,5 @@ L'obiettivo giornaliero usa i minuti delle sessioni completate di oggi. Imposta
 un intero tra 1 e 1440 minuti; 0 lo disattiva. Cambiare l'obiettivo non modifica
 le statistiche. L'obiettivo e incluso nei backup JSON; i vecchi backup senza
 obiettivo restano validi e lo disattivano quando vengono ripristinati.
+
+Limiti dei task: massimo 1000 task, ciascuno fino a 2000 caratteri, senza duplicati (maiuscole ignorate). Nelle statistiche trovi anche la serie migliore, la durata media delle sessioni e le ultime cinque sessioni.
