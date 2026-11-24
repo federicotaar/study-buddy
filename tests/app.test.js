@@ -447,3 +447,10 @@ assert.strictEqual(vm.runInContext('formatTime(-5)',ctx),'00:00');
 assert.strictEqual(vm.runInContext('formatTime(NaN)',ctx),'00:00');
 assert.strictEqual(vm.runInContext('formatTime(61.9)',ctx),'01:01');
 assert.strictEqual(vm.runInContext('formatTime(3600)',ctx),'60:00');
+
+store.clear();
+els.taskInput.value='x'.repeat(2001);els.taskForm._h.submit({preventDefault(){}});
+assert.strictEqual(vm.runInContext('loadTasks().length',ctx),0);
+els.taskInput.value='x'.repeat(2000);els.taskForm._h.submit({preventDefault(){}});
+assert.strictEqual(vm.runInContext('loadTasks().length',ctx),1);
+assert.doesNotThrow(()=>vm.runInContext('validateBackup(exportBackup())',ctx));
