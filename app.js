@@ -264,6 +264,8 @@ function goalProgress(){
  return {goal,minutes,remaining:Math.max(0,goal-minutes),percent:goal?Math.min(100,Math.round(minutes/goal*100)):0};
 }
 
+function goalDaysThisWeek(){const goal=dailyGoal();if(!goal)return 0;let days=0;for(let i=0;i<7;i++){if(loadStatsFor(dayKeyOffset(i)).minutes>=goal)days++}return days}
+
 function renderGoal(){
  const input=$('dailyGoal'),bar=$('goalProgress'),status=$('goalStatus');
  if(!input||!bar||!status)return;
