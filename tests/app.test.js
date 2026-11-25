@@ -595,3 +595,13 @@ store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true}]));
 assert.strictEqual(vm.runInContext('nextOpenTask()',ctx),null);
 store.set('studyBuddy:tasks','[]');
 console.log('NEXT OPEN PASS');
+
+// bestDayThisWeek is the most minutes on one of the last 7 days
+for(const i of [0,1,2,3,4,5,6,7,8])store.delete('studyBuddy:stats:'+vm.runInContext('dayKeyOffset('+i+')',ctx));
+assert.strictEqual(vm.runInContext('bestDayThisWeek()',ctx),0);
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(1)',ctx),'{"sessions":1,"minutes":25}');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(4)',ctx),'{"sessions":3,"minutes":75}');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(8)',ctx),'{"sessions":9,"minutes":999}');
+assert.strictEqual(vm.runInContext('bestDayThisWeek()',ctx),75);
+for(const i of [1,4,8])store.delete('studyBuddy:stats:'+vm.runInContext('dayKeyOffset('+i+')',ctx));
+console.log('BEST DAY PASS');
