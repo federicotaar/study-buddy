@@ -56,6 +56,7 @@ function moveTask(idx,delta){const tasks=loadTasks();const j=idx+delta;if(!Numbe
 function taskCounts(){const tasks=loadTasks();const done=tasks.filter(t=>t.done).length;return {total:tasks.length,done,open:tasks.length-done}}
 function exportTasksText(){return loadTasks().map(t=>(t.done?'- [x] ':'- [ ] ')+t.text.replace(/\s*\n\s*/g,' ')).join('\n')}
 function importTasksFromText(text){if(typeof text!=='string')return 0;const tasks=loadTasks();const seen=new Set(tasks.map(t=>t.text.trim().toLocaleLowerCase()));let added=0;for(const raw of text.split(/\r?\n/)){const line=raw.replace(/^\s*(?:[-*]\s*(?:\[[ xX]\]\s*)?|\d+[.)]\s+)/,'').trim();const key=line.toLocaleLowerCase();if(!line||line.length>MAX_TASK_LENGTH||seen.has(key)||tasks.length>=MAX_TASKS)continue;seen.add(key);tasks.push({text:line,done:false});added++}if(!added)return 0;return saveTasks(tasks)?added:false}
+function sortDoneLast(){const tasks=loadTasks();const sorted=[...tasks.filter(t=>!t.done),...tasks.filter(t=>t.done)];if(sorted.every((t,i)=>t===tasks[i]))return 0;let moved=0;sorted.forEach((t,i)=>{if(t!==tasks[i])moved++});return saveTasks(sorted)?moved:false}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
