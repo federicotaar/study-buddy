@@ -538,3 +538,12 @@ assert.strictEqual(vm.runInContext('exportTasksText()',ctx),'- [x] Leggi cap. 3\
 store.set('studyBuddy:tasks','[]');
 assert.strictEqual(vm.runInContext('exportTasksText()',ctx),'');
 console.log('EXPORT TASKS TEXT PASS');
+
+// importTasksFromText strips bullets, skips blanks and duplicates, honours the limits
+store.set('studyBuddy:tasks',JSON.stringify([{text:'Matematica',done:false}]));
+assert.strictEqual(vm.runInContext('importTasksFromText("- [ ] Storia\\n2) Inglese\\n\\n  matematica  \\n* Fisica\\r\\nStoria")',ctx),3);
+assert.deepStrictEqual(JSON.parse(store.get('studyBuddy:tasks')).map(t=>t.text),['Matematica','Storia','Inglese','Fisica']);
+assert.strictEqual(vm.runInContext('importTasksFromText(42)',ctx),0);
+assert.strictEqual(vm.runInContext('importTasksFromText("x".repeat(2001))',ctx),0);
+store.set('studyBuddy:tasks','[]');
+console.log('IMPORT TASKS TEXT PASS');
