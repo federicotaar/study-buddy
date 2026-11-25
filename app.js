@@ -62,6 +62,7 @@ function taskMatches(t,query){const q=String(query||'').trim().toLocaleLowerCase
 function nextOpenTask(){const t=loadTasks().find(t=>!t.done);return t?t.text:null}
 function bestDayThisWeek(){let best=0;for(let i=0;i<7;i++){const m=loadStatsFor(dayKeyOffset(i)).minutes;if(m>best)best=m}return best}
 function totalMinutesAllTime(){let total=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(STATS_PREFIX)===0){const d=k.slice(STATS_PREFIX.length);if(/^\d{4}-\d{2}-\d{2}$/.test(d))total+=loadStatsFor(d).minutes}}}catch(e){return total}return total}
+function totalSessionsAllTime(){let total=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.indexOf(STATS_PREFIX)===0){const d=k.slice(STATS_PREFIX.length);if(/^\d{4}-\d{2}-\d{2}$/.test(d))total+=loadStatsFor(d).sessions}}}catch(e){return total}return total}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
