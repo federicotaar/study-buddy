@@ -531,3 +531,10 @@ store.set('studyBuddy:tasks','not json');
 assert.strictEqual(vm.runInContext('taskCounts().total',ctx),0);
 store.set('studyBuddy:tasks','[]');
 console.log('TASK COUNTS PASS');
+
+// exportTasksText writes one markdown checklist line per task
+store.set('studyBuddy:tasks',JSON.stringify([{text:'Leggi cap. 3',done:true},{text:'Esercizi\npag 4',done:false}]));
+assert.strictEqual(vm.runInContext('exportTasksText()',ctx),'- [x] Leggi cap. 3\n- [ ] Esercizi pag 4');
+store.set('studyBuddy:tasks','[]');
+assert.strictEqual(vm.runInContext('exportTasksText()',ctx),'');
+console.log('EXPORT TASKS TEXT PASS');
