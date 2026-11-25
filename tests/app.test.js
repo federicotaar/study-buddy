@@ -605,3 +605,13 @@ store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(8)',ctx),'{"sessions
 assert.strictEqual(vm.runInContext('bestDayThisWeek()',ctx),75);
 for(const i of [1,4,8])store.delete('studyBuddy:stats:'+vm.runInContext('dayKeyOffset('+i+')',ctx));
 console.log('BEST DAY PASS');
+
+// totalMinutesAllTime sums every valid day and skips corrupted ones
+const baseAll=vm.runInContext('totalMinutesAllTime()',ctx);
+store.set('studyBuddy:stats:2001-01-01','{"sessions":1,"minutes":40}');
+store.set('studyBuddy:stats:2001-01-02','{"sessions":2,"minutes":60}');
+store.set('studyBuddy:stats:2001-01-03','not json');
+assert.strictEqual(vm.runInContext('totalMinutesAllTime()',ctx),baseAll+100);
+for(const d of ['2001-01-01','2001-01-02','2001-01-03'])store.delete('studyBuddy:stats:'+d);
+assert.strictEqual(vm.runInContext('totalMinutesAllTime()',ctx),baseAll);
+console.log('TOTAL MINUTES PASS');
