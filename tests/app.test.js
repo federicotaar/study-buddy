@@ -555,3 +555,15 @@ assert.deepStrictEqual(JSON.parse(store.get('studyBuddy:tasks')).map(t=>t.text),
 assert.strictEqual(vm.runInContext('sortDoneLast()',ctx),0);
 store.set('studyBuddy:tasks','[]');
 console.log('SORT DONE LAST PASS');
+
+// goalDaysThisWeek counts the last 7 days that reached the goal, and is 0 without a goal
+store.set('studyBuddy:dailyGoal','0');
+assert.strictEqual(vm.runInContext('goalDaysThisWeek()',ctx),0);
+store.set('studyBuddy:dailyGoal','30');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(0)',ctx),'{"sessions":2,"minutes":50}');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(2)',ctx),'{"sessions":1,"minutes":25}');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(3)',ctx),'{"sessions":1,"minutes":30}');
+store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(8)',ctx),'{"sessions":9,"minutes":999}');
+assert.strictEqual(vm.runInContext('goalDaysThisWeek()',ctx),2);
+store.set('studyBuddy:dailyGoal','0');
+console.log('GOAL DAYS PASS');
