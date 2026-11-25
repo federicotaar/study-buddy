@@ -2,6 +2,13 @@
 
 Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti.
 
+## 2026-11-25
+
+- `formatMinutes()`: formatta i minuti come "1 h 5 min" dopo i 60 minuti.
+- Riepilogo task calcolato da `taskCounts()` (totale, completati, aperti).
+- Funzioni per esportare i task come checklist (`exportTasksText`), importarli da testo incollato (`importTasksFromText`) e portare i completati in fondo (`sortDoneLast`).
+- `goalDaysThisWeek()`: quanti degli ultimi 7 giorni hanno raggiunto l'obiettivo giornaliero.
+
 ## 2026-11-24
 
 - I task piu' lunghi di 2000 caratteri non vengono piu' accettati (prima potevano rendere impossibile il ripristino di un backup).
