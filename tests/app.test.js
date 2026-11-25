@@ -577,3 +577,11 @@ store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done
 assert.strictEqual(vm.runInContext('taskPercentDone()',ctx),67);
 store.set('studyBuddy:tasks','[]');
 console.log('TASK PERCENT PASS');
+
+// taskMatches is case-insensitive, trims the query and matches everything when it is blank
+assert.strictEqual(vm.runInContext("taskMatches({text:'Studia Matematica'},'  MATE ')",ctx),true);
+assert.strictEqual(vm.runInContext("taskMatches({text:'Studia Matematica'},'storia')",ctx),false);
+assert.strictEqual(vm.runInContext("taskMatches({text:'x'},'')",ctx),true);
+assert.strictEqual(vm.runInContext("taskMatches({text:'x'},null)",ctx),true);
+assert.strictEqual(vm.runInContext("taskMatches(null,'a')",ctx),false);
+console.log('TASK MATCHES PASS');
