@@ -59,6 +59,7 @@ function importTasksFromText(text){if(typeof text!=='string')return 0;const task
 function sortDoneLast(){const tasks=loadTasks();const sorted=[...tasks.filter(t=>!t.done),...tasks.filter(t=>t.done)];if(sorted.every((t,i)=>t===tasks[i]))return 0;let moved=0;sorted.forEach((t,i)=>{if(t!==tasks[i])moved++});return saveTasks(sorted)?moved:false}
 function taskPercentDone(){const c=taskCounts();return c.total?Math.round(c.done/c.total*100):0}
 function taskMatches(t,query){const q=String(query||'').trim().toLocaleLowerCase();return !q||String(t&&t.text||'').toLocaleLowerCase().includes(q)}
+function nextOpenTask(){const t=loadTasks().find(t=>!t.done);return t?t.text:null}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
