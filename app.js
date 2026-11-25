@@ -39,6 +39,7 @@ let completedWorkSessions=Number.isSafeInteger(storedCycle)&&storedCycle>=0 ? st
 // Utilities
 function pad(n){return n.toString().padStart(2,'0')}
 function formatTime(sec){sec=Number.isFinite(sec)?Math.max(0,Math.floor(sec)):0;return `${pad(Math.floor(sec/60))}:${pad(sec%60)}`}
+function formatMinutes(min){min=Number.isFinite(min)?Math.max(0,Math.floor(min)):0;if(min<60)return min+' min';const h=Math.floor(min/60),m=min%60;return m?`${h} h ${m} min`:`${h} h`}
 function todayKey(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 
 // Tasks
