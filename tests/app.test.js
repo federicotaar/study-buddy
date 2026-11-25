@@ -567,3 +567,13 @@ store.set('studyBuddy:stats:'+vm.runInContext('dayKeyOffset(8)',ctx),'{"sessions
 assert.strictEqual(vm.runInContext('goalDaysThisWeek()',ctx),2);
 store.set('studyBuddy:dailyGoal','0');
 console.log('GOAL DAYS PASS');
+
+// taskPercentDone is a rounded percentage and 0 when there are no tasks
+store.set('studyBuddy:tasks','[]');
+assert.strictEqual(vm.runInContext('taskPercentDone()',ctx),0);
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done:false},{text:'c',done:false}]));
+assert.strictEqual(vm.runInContext('taskPercentDone()',ctx),33);
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done:true},{text:'c',done:false}]));
+assert.strictEqual(vm.runInContext('taskPercentDone()',ctx),67);
+store.set('studyBuddy:tasks','[]');
+console.log('TASK PERCENT PASS');
