@@ -585,3 +585,13 @@ assert.strictEqual(vm.runInContext("taskMatches({text:'x'},'')",ctx),true);
 assert.strictEqual(vm.runInContext("taskMatches({text:'x'},null)",ctx),true);
 assert.strictEqual(vm.runInContext("taskMatches(null,'a')",ctx),false);
 console.log('TASK MATCHES PASS');
+
+// nextOpenTask returns the first unfinished task text, or null when nothing is open
+store.set('studyBuddy:tasks','[]');
+assert.strictEqual(vm.runInContext('nextOpenTask()',ctx),null);
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done:false},{text:'c',done:false}]));
+assert.strictEqual(vm.runInContext('nextOpenTask()',ctx),'b');
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true}]));
+assert.strictEqual(vm.runInContext('nextOpenTask()',ctx),null);
+store.set('studyBuddy:tasks','[]');
+console.log('NEXT OPEN PASS');
