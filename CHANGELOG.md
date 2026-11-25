@@ -4,6 +4,8 @@ Tutte le modifiche rilevanti a Study Buddy sono elencate qui, dalle più recenti
 
 ## 2026-11-25
 
+- `taskPercentDone()`, `taskMatches()` (usata dalla ricerca) e `nextOpenTask()` per i task.
+- `bestDayThisWeek()`, `totalMinutesAllTime()` e `totalSessionsAllTime()` per le statistiche.
 - `formatMinutes()`: formatta i minuti come "1 h 5 min" dopo i 60 minuti.
 - Riepilogo task calcolato da `taskCounts()` (totale, completati, aperti).
 - Funzioni per esportare i task come checklist (`exportTasksText`), importarli da testo incollato (`importTasksFromText`) e portare i completati in fondo (`sortDoneLast`).
