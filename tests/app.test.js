@@ -521,3 +521,13 @@ assert.strictEqual(vm.runInContext('formatMinutes(125)',ctx),'2 h 5 min');
 assert.strictEqual(vm.runInContext('formatMinutes(-5)',ctx),'0 min');
 assert.strictEqual(vm.runInContext('formatMinutes(NaN)',ctx),'0 min');
 console.log('FORMAT MINUTES PASS');
+
+// taskCounts reports total, done and open tasks and survives corrupted storage
+store.set('studyBuddy:tasks','[]');
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('taskCounts()',ctx))),{total:0,done:0,open:0});
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done:false},{text:'c'}]));
+assert.deepStrictEqual(JSON.parse(JSON.stringify(vm.runInContext('taskCounts()',ctx))),{total:3,done:1,open:2});
+store.set('studyBuddy:tasks','not json');
+assert.strictEqual(vm.runInContext('taskCounts().total',ctx),0);
+store.set('studyBuddy:tasks','[]');
+console.log('TASK COUNTS PASS');
