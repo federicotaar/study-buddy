@@ -60,6 +60,7 @@ function sortDoneLast(){const tasks=loadTasks();const sorted=[...tasks.filter(t=
 function taskPercentDone(){const c=taskCounts();return c.total?Math.round(c.done/c.total*100):0}
 function taskMatches(t,query){const q=String(query||'').trim().toLocaleLowerCase();return !q||String(t&&t.text||'').toLocaleLowerCase().includes(q)}
 function nextOpenTask(){const t=loadTasks().find(t=>!t.done);return t?t.text:null}
+function bestDayThisWeek(){let best=0;for(let i=0;i<7;i++){const m=loadStatsFor(dayKeyOffset(i)).minutes;if(m>best)best=m}return best}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
