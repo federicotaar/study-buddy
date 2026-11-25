@@ -615,3 +615,11 @@ assert.strictEqual(vm.runInContext('totalMinutesAllTime()',ctx),baseAll+100);
 for(const d of ['2001-01-01','2001-01-02','2001-01-03'])store.delete('studyBuddy:stats:'+d);
 assert.strictEqual(vm.runInContext('totalMinutesAllTime()',ctx),baseAll);
 console.log('TOTAL MINUTES PASS');
+
+// totalSessionsAllTime sums sessions over all saved days
+const baseSess=vm.runInContext('totalSessionsAllTime()',ctx);
+store.set('studyBuddy:stats:2001-02-01','{"sessions":4,"minutes":10}');
+store.set('studyBuddy:stats:2001-02-02','{"sessions":-3,"minutes":10}');
+assert.strictEqual(vm.runInContext('totalSessionsAllTime()',ctx),baseSess+4);
+for(const d of ['2001-02-01','2001-02-02'])store.delete('studyBuddy:stats:'+d);
+console.log('TOTAL SESSIONS PASS');
