@@ -53,6 +53,7 @@ function hasTask(text){const key=String(text||'').trim().toLocaleLowerCase();ret
 function editTask(idx,text){const tasks=loadTasks();if(!Number.isSafeInteger(idx)||!tasks[idx])return false;const val=(text||'').trim();if(!val||val.length>MAX_TASK_LENGTH)return false;tasks[idx].text=val;return saveTasks(tasks)}
 function setAllTasksDone(done){const tasks=loadTasks();if(!tasks.length)return 0;let changed=0;for(const t of tasks){if(t.done!==!!done){t.done=!!done;changed++}}if(!changed)return 0;return saveTasks(tasks)?changed:false}
 function moveTask(idx,delta){const tasks=loadTasks();const j=idx+delta;if(!Number.isSafeInteger(idx)||!tasks[idx]||!tasks[j])return false;[tasks[idx],tasks[j]]=[tasks[j],tasks[idx]];return saveTasks(tasks)}
+function taskCounts(){const tasks=loadTasks();const done=tasks.filter(t=>t.done).length;return {total:tasks.length,done,open:tasks.length-done}}
 function saveTasks(tasks){
  try {localStorage.setItem(TASKS_KEY,JSON.stringify(tasks));return true;}
  catch(e){alert('Impossibile salvare i task nel browser. I dati non sono stati modificati.');return false;}
