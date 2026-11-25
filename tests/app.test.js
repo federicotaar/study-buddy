@@ -512,3 +512,12 @@ store.clear();els.sessionHistory.children=[];
 vm.runInContext('appendSessionLog(30);renderStats()',ctx);
 assert.strictEqual(els.sessionHistory.children.length,1);
 assert.ok(els.sessionHistory.children[0].textContent.endsWith(' - 30 min'));
+
+// formatMinutes shows hours once a total reaches 60 minutes and clamps bad input
+assert.strictEqual(vm.runInContext('formatMinutes(0)',ctx),'0 min');
+assert.strictEqual(vm.runInContext('formatMinutes(59)',ctx),'59 min');
+assert.strictEqual(vm.runInContext('formatMinutes(60)',ctx),'1 h');
+assert.strictEqual(vm.runInContext('formatMinutes(125)',ctx),'2 h 5 min');
+assert.strictEqual(vm.runInContext('formatMinutes(-5)',ctx),'0 min');
+assert.strictEqual(vm.runInContext('formatMinutes(NaN)',ctx),'0 min');
+console.log('FORMAT MINUTES PASS');
