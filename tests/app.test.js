@@ -547,3 +547,11 @@ assert.strictEqual(vm.runInContext('importTasksFromText(42)',ctx),0);
 assert.strictEqual(vm.runInContext('importTasksFromText("x".repeat(2001))',ctx),0);
 store.set('studyBuddy:tasks','[]');
 console.log('IMPORT TASKS TEXT PASS');
+
+// sortDoneLast moves finished tasks down and keeps the order inside each group
+store.set('studyBuddy:tasks',JSON.stringify([{text:'a',done:true},{text:'b',done:false},{text:'c',done:true},{text:'d',done:false}]));
+assert.ok(vm.runInContext('sortDoneLast()',ctx)>0);
+assert.deepStrictEqual(JSON.parse(store.get('studyBuddy:tasks')).map(t=>t.text),['b','d','a','c']);
+assert.strictEqual(vm.runInContext('sortDoneLast()',ctx),0);
+store.set('studyBuddy:tasks','[]');
+console.log('SORT DONE LAST PASS');
